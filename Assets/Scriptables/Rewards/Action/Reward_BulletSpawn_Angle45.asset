@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c55994263d348374aa316b8ddede2d90, type: 3}
+  m_Name: Reward_BulletSpawn_Angle45
+  m_EditorClassIdentifier: 
+  rewardType: 1
+  img_Thumbnail: {fileID: 21300000, guid: 78177e7172e168b4aab879b3b2342d4e, type: 3}
+  string_RewardType: ACTION
+  string_Name: "\uC0AC\uC120 \uD22C\uC0AC\uCCB4"
+  string_Description: "\uC0AC\uC120\uC744 \uD5A5\uD574 \uD22C\uC0AC\uCCB4 \uBC1C\uC0AC"
+  numberOfOverlaps: 2

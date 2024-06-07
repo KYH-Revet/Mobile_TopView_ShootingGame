@@ -1,0 +1,6 @@
+===Manager===
+GameManager.cs
+SoundManager.cs
+
+===Objects===
+Player.cs

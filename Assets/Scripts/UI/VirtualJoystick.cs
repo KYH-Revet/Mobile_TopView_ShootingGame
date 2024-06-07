@@ -1,0 +1,186 @@
+using System.Collections;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using UnityEngine;
+using System.Collections.Generic;
+using System;
+
+public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameResult>
+{
+    Player player;
+    [Tooltip("조이스틱 구성 이미지")]
+    Image[] images;
+
+    [SerializeField]
+    RectTransform lever;
+    RectTransform rectTransform;
+
+    // Joystick input values
+    [SerializeField, Range(10, 150)]
+    float leverRange = 30;          // Max of lever range
+    Vector2 inputDirection;         // Calculated direction vector(lever)
+    public bool isWorking = false;  // Joystick is working?
+    bool receivingInput = false;    // Joystick is receiving input from player?
+    
+
+    //Unity Functions
+    void Start()
+    {
+        // Get Player
+        player = Player.instance;
+        if (player == null)
+        {
+            Debug.LogError("VirtualJoystick.cs : player is null");
+            Destroy(gameObject);
+        }
+
+        // Get Rect Transform
+        rectTransform = GetComponent<RectTransform>();
+
+        // Images Off
+        images = GetComponentsInChildren<Image>();
+        ImageAlpha(0f);
+
+        // Observer Pattern
+        Subscribe();
+    }
+    void Update()
+    {
+        // Do nothing
+        if (isWorking)
+            return;
+
+        // Joystick
+        //OnTouch();
+        OnMouseButton();    // Test
+
+        // Receive input
+        if (receivingInput) // Player is Move
+        {
+            LeverDrag(Input.mousePosition);
+            player.Move(inputDirection);
+        }
+    }
+
+    // Joystick Functions
+    void OnMouseButton()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            // UI
+            ImageAlpha(0.5f);
+            receivingInput = true;
+
+            // Stick position
+            transform.position = Input.mousePosition;
+
+            // StateMachin
+            player.ChangeState(Character._StateMachine.Move);
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            // UI
+            ImageAlpha(0f);
+            receivingInput = false;
+
+            // StateMachin
+            player.ChangeState(Character._StateMachine.Attack);
+        }
+    }
+    void OnTouch()
+    {
+        if (Input.touchCount <= 0)
+            return;
+
+        Touch touch = Input.GetTouch(0);
+        switch (touch.phase)
+        {
+            case TouchPhase.Began:
+                if(!receivingInput)
+                {
+                    // UI On
+                    ImageAlpha(0.5f);
+                    receivingInput = true;
+
+                    // Stick Position
+                    transform.position = Input.GetTouch(0).rawPosition;
+
+                    // StateMachin
+                    player.ChangeState(Character._StateMachine.Move);
+                }
+                break;
+            case TouchPhase.Moved:
+                // Update position
+                LeverDrag(Input.GetTouch(0).position);
+                break;
+            case TouchPhase.Ended:
+                // UI Off
+                ImageAlpha(0f);
+                receivingInput = false;
+
+                // StateMachin
+                player.ChangeState(Character._StateMachine.Attack);
+                break;
+        }
+    }
+    void LeverDrag(Vector2 eventPos)
+    {
+        // Direction vector
+        var inputPos = eventPos - rectTransform.anchoredPosition;
+        // Input vector = 0 ~ lever range
+        var inputVector = inputPos.magnitude < leverRange ? inputPos : inputPos.normalized * leverRange;
+        // Repositioning to stick
+        lever.anchoredPosition = inputVector;
+        // Input direction = 0 ~ 1
+        inputDirection = inputVector / leverRange;
+    }
+
+    // UI Function
+    void ImageAlpha(float alpha)
+    {
+        foreach (var image in images)
+            image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
+    }
+
+    // Observer Pattern
+    private void Subscribe()
+    {
+        // GameManager
+        GameManager.instance.Subscribe(this);
+
+        // Reward cards
+        if (RewardContainer.instance != null)
+        {
+            foreach (RewardCard cards in RewardContainer.instance.rewardCards)
+                cards.Subscribe(this);
+        }
+    }
+    public void OnCompleted()
+    {
+        throw new NotImplementedException();
+    }
+    public void OnError(Exception error)
+    {
+        Debug.LogError(error.ToString());
+    }
+    public void OnNext(GameManager.GameResult value)
+    {
+        switch (value)
+        {
+            // Pause the function
+            case GameManager.GameResult.StageClear:
+                // Stop receiving input data
+                isWorking = false;
+                receivingInput = false;
+
+                // UI Off
+                ImageAlpha(0f);
+                break;
+            // No more need
+            case GameManager.GameResult.Win:
+            case GameManager.GameResult.Lose:
+                Destroy(gameObject);
+                break;
+        }
+    }
+}

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 927ee9178ab523545b98e253bc7e7fad, type: 3}
+  m_Name: Reward_Stat_DamageUp
+  m_EditorClassIdentifier: 
+  rewardType: 0
+  img_Thumbnail: {fileID: 21300000, guid: 32de361214c771740a7a1963222b2c14, type: 3}
+  string_RewardType: EFFECT
+  string_Name: "\uACF5\uACA9\uB825 \uC99D\uAC00"
+  string_Description: "\uACF5\uACA9\uB825\uC774 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  leftRewardCount: 4
