@@ -24,11 +24,6 @@ public abstract class Character : MonoBehaviour, IObserver<GameManager.GameResul
         //Set default strategy
         SetDefaultStrategy();
     }
-    protected virtual void Start()
-    {
-        // Observer Pattern
-        Subscribe();
-    }
     protected virtual void Update()
     {
         //StateMachine

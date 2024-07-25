@@ -50,10 +50,10 @@ public class Player : Character, IObserver<GameManager.GameResult>, IObservable<
         // One game, One player
         DontDestroyOnLoad(gameObject);
     }
-    protected override void Start()
+    protected void Start()
     {
         // Observer Pattern
-        base.Start();
+        Subscribe();
 
         //// Damage Reward Test
         //Reward test;
@@ -236,7 +236,7 @@ public class Player : Character, IObserver<GameManager.GameResult>, IObservable<
     public void NotifyObserver()
     {
         foreach (IObserver<Player> observer in observers_PlayerMove)
-            observer.OnNext(this);
+                observer.OnNext(this);
     }
     public void Dispose()
     {
