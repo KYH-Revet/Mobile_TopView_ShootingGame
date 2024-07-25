@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 public abstract class Enemy : Character, IObserver<Player>
 {
     // <summary>target = player</summary>
-    private Transform target;
+    protected Transform target;
     // NavMeshAgent Component
     protected NavMeshAgent navMeshAgent;
 
@@ -21,10 +21,21 @@ public abstract class Enemy : Character, IObserver<Player>
 
     [Tooltip("공격 간 딜레이 시간")]
     public float attackDelay = 3f;
-    protected float attackDelay_Cur = 0f;
+    protected float attackDelay_Cur;
 
-    // <summary>공격 후 다음 공격을 위한 대기 시간</summary>
-    // <returns>true = Ready to attack, false = Waiting</returns>
+    // Unity Functions
+    protected override void Awake()
+    {
+        // Base
+        base.Awake();
+
+        // Attack delay timer
+        attackDelay_Cur = attackDelay;
+    }
+
+    // System Funtions
+    /// <summary>공격 후 다음 공격을 위한 대기 시간</summary>
+    /// <returns> true = Ready to attack, false = Waiting</returns>
     protected bool DelayTimer()
     {
         // Timer
@@ -91,14 +102,14 @@ public abstract class Enemy : Character, IObserver<Player>
     }
 
     // Default setting when spawn
-    public virtual void SpawnSetting()
+    public void SpawnSetting()
     {
         // Get target(Player)
         target = Player.instance.transform;
 
-        // Start position
+        // Have a first destination?
         positioning = firstDestination == null;
-        
+
         // NavMeshAgent
         SetNavMeshAgentOption();
 
@@ -109,11 +120,28 @@ public abstract class Enemy : Character, IObserver<Player>
         Subscribe();
     }
 
+    // Player tracking
+    protected void PlayerTracking()
+    {
+        // Target(Player)가 사거리를 벗어남. 추격 재개
+        if (positioning && DistanceToPlayer() > range)
+        {
+            // NavMesh start
+            navMeshAgent.isStopped = false;
+
+            // Reset dely timer
+            attackDelay_Cur = 0f;
+
+            // State Change
+            ChangeState(_StateMachine.Move);
+        }
+    }
+
     // StateMachine
     public abstract override void StateMachine();
 
     // Actions
-    public abstract override void Idle();
+    public abstract override void Idle();   
     public abstract override bool Move();
     public abstract override void Attack();
     public override void Dead()
@@ -128,22 +156,18 @@ public abstract class Enemy : Character, IObserver<Player>
     // Set Strategy
     protected abstract override void SetDefaultStrategy();
 
-    // Observer Pattern
-    private void Subscribe()
+    // Observer Pattern Observe : Player Move Input
+    public override void Subscribe()
     {
+        // GameManager GameResult
+        base.Subscribe();
+
+        // Player Move Input
         Player.instance.Subscribe(this);
     }
     private void UnSubscribe()
     {
         Player.instance.UnSubscribe(this);
-    }
-    public void OnCompleted()
-    {
-        throw new NotImplementedException();
-    }
-    public void OnError(Exception error)
-    {
-        Debug.LogError(error.ToString());
     }
     public void OnNext(Player value)
     {

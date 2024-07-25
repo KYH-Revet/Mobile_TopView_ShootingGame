@@ -1,27 +1,17 @@
 using UnityEngine;
 
-public abstract class Enemy_Normal : Enemy
+public class Enemy_Normal : Enemy
 {
     // StateMachine
     public override void StateMachine()
     {
-        // Target(Player)가 사거리를 벗어남. 추격 재개
-        if (positioning && DistanceToPlayer() > range)
-        {
-            // NavMesh start
-            navMeshAgent.isStopped = false;
-
-            // Reset dely timer
-            attackDelay_Cur = 0f;
-
-            // State Change
-            ChangeState(_StateMachine.Move);
-        }
-
         // StateMachine
         switch (state)
         {
             case _StateMachine.Idle:
+                // Target(Player)가 사거리를 벗어남. 추격 재개
+                PlayerTracking();
+
                 Idle();
                 break;
             case _StateMachine.Move:
@@ -47,9 +37,10 @@ public abstract class Enemy_Normal : Enemy
         if (!positioning)
         {
             // Reach to first destination
-            if (navMeshAgent.remainingDistance <= 1f)
+            if (Vector3.Distance(transform.position, firstDestination.position) <= 1f)
             {
                 positioning = true;
+                navMeshAgent.SetDestination(target.position);
                 navMeshAgent.stoppingDistance = range;
                 return false;
             }
@@ -74,9 +65,11 @@ public abstract class Enemy_Normal : Enemy
         //Look at Target
         AimToTarget();
     }
+    /// <summary> Default strategy = Single damage </summary>
     protected override void SetDefaultStrategy()
     {
         //Bullet option
         AddBulletDamageType(new DamageType_Single());
     }
+    
 }

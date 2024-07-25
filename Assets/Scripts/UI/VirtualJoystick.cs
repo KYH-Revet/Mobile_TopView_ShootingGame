@@ -1,11 +1,8 @@
-using System.Collections;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine;
-using System.Collections.Generic;
 using System;
 
-public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameResult>
+public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameResult>, IObserver<RewardCard>
 {
     Player player;
     [Tooltip("조이스틱 구성 이미지")]
@@ -19,10 +16,9 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameResult>
     [SerializeField, Range(10, 150)]
     float leverRange = 30;          // Max of lever range
     Vector2 inputDirection;         // Calculated direction vector(lever)
-    public bool isWorking = false;  // Joystick is working?
+    public bool isWorking = true;   // Joystick is working?
     bool receivingInput = false;    // Joystick is receiving input from player?
     
-
     //Unity Functions
     void Start()
     {
@@ -41,18 +37,24 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameResult>
         images = GetComponentsInChildren<Image>();
         ImageAlpha(0f);
 
+        // Is working?
+        isWorking = GameManager.instance.gameResult == GameManager.GameResult.Processing;
+
         // Observer Pattern
         Subscribe();
     }
     void Update()
     {
         // Do nothing
-        if (isWorking)
+        if (!isWorking)
             return;
 
         // Joystick
-        //OnTouch();
-        OnMouseButton();    // Test
+#if UNITY_IOS || UNITY_ANDROID  // Mobile Touch
+        OnTouch();
+#else                           // Test Mouse
+        OnMouseButton();
+#endif
 
         // Receive input
         if (receivingInput) // Player is Move
@@ -142,13 +144,13 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameResult>
             image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
     }
 
-    // Observer Pattern
+    // Observer Pattern Observe : Game Result
     private void Subscribe()
     {
-        // GameManager
+        // GameManager GameResult
         GameManager.instance.Subscribe(this);
 
-        // Reward cards
+        // Reward cards, Observe = RewardCard(Sign of Reward card Selected)
         if (RewardContainer.instance != null)
         {
             foreach (RewardCard cards in RewardContainer.instance.rewardCards)
@@ -163,24 +165,42 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameResult>
     {
         Debug.LogError(error.ToString());
     }
+
+    /// <summary>Observe : Game result Changed</summary>
+    /// <param name="value">GameManaer.instance.gameResult</param>
     public void OnNext(GameManager.GameResult value)
     {
         switch (value)
         {
+            // UnPause the function
+            case GameManager.GameResult.Processing:
+                isWorking = true;
+                break;
+
             // Pause the function
             case GameManager.GameResult.StageClear:
+            case GameManager.GameResult.Pause:
                 // Stop receiving input data
                 isWorking = false;
-                receivingInput = false;
-
-                // UI Off
-                ImageAlpha(0f);
                 break;
+
             // No more need
             case GameManager.GameResult.Win:
             case GameManager.GameResult.Lose:
                 Destroy(gameObject);
                 break;
         }
+
+        // Reset input sign
+        receivingInput = false;
+
+        // UI Off
+        ImageAlpha(0f);
+    }
+    /// <summary>Observe : Reward card selected</summary>
+    /// <param name="value">Subject 구분용</param>
+    public void OnNext(RewardCard value)
+    {
+        isWorking = true;
     }
 }

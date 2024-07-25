@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// BGM     : 로비, 진행, 보스, 승리, 패배
+/// BGM     : 로비, 스테이지, 보스전, 승리, 패배
 /// 효과음  : Player의 발포음
 /// </summary>
 
@@ -17,10 +17,17 @@ public class SoundManager : MonoBehaviour, IObserver<GameManager.GameResult>
         // Audio Source
         GetComponent<AudioSource>().volume = instance.audioSource.volume;   //Volume
 
-        // BGM's
-        mainBGM = instance.mainBGM; //Main
-        winBGM = instance.winBGM;   //Win
-        loseBGM = instance.loseBGM; //Lose
+        // Volume
+        bgmVolume = PlayerPrefs.GetFloat("Volume_BGM");
+        effectVolume = PlayerPrefs.GetFloat("Volume_Effect");
+
+        // BGM'ss
+        if(mainBGM == null)
+            mainBGM = instance.mainBGM; //Main
+        if(winBGM == null)
+            winBGM = instance.winBGM;   //Win
+        if (loseBGM == null)
+            loseBGM = instance.loseBGM; //Lose
 
         // Destroy instance
         Destroy(instance.gameObject);
@@ -36,6 +43,13 @@ public class SoundManager : MonoBehaviour, IObserver<GameManager.GameResult>
     [Header("Game Result BGM")]
     public AudioClip winBGM;
     public AudioClip loseBGM;
+
+    // Audio Volume
+    [Header("Audio Volume")]
+    [Range(0f, 1f)]
+    public float bgmVolume;
+    [Range(0f, 1f)]
+    public float effectVolume;
 
     // Unity Functions
     void Awake()
@@ -55,23 +69,63 @@ public class SoundManager : MonoBehaviour, IObserver<GameManager.GameResult>
         audioSource.clip = mainBGM;
         audioSource.Play();
 
+        // Save PlayerPrefs data
+        if(!PlayerPrefs.HasKey("Volume_BGM"))
+            PlayerPrefs.SetFloat("Volume_BGM", bgmVolume);
+        else
+            bgmVolume = PlayerPrefs.GetFloat("Volume_BGM");
+        if (!PlayerPrefs.HasKey("Volume_Effect"))
+            PlayerPrefs.SetFloat("Volume_Effect", effectVolume);
+        else
+            effectVolume = PlayerPrefs.GetFloat("Volume_Effect");
+
         // Dont Destroy this
         DontDestroyOnLoad(gameObject);
     }
     void Start()
     {
-        //Observer Pattern
+        // Load & Apply the volume value
+        LoadVolumeValue();
+
+        // Observer Pattern
         Subscribe();
     }
 
-    // Observer Pattern
+    // Volume Functions
+    public void SetBGMVolume(float value)
+    {
+        // Save the value
+        bgmVolume = value;
+
+        // Apply volume
+        audioSource.volume = bgmVolume;
+    }
+    public void SetEffectVolume(float value)
+    {
+        // Save the value
+        effectVolume = value;
+
+        // Apply volume
+        if (Player.instance != null)
+            Player.instance.GetComponent<AudioSource>().volume = effectVolume;
+    }
+    private void LoadVolumeValue()
+    {
+        SetBGMVolume(PlayerPrefs.GetFloat("Volume_BGM"));       // BGM
+        SetEffectVolume(PlayerPrefs.GetFloat("Volume_Effect")); // Effect
+    }
+
+
+    // Observer Pattern Observe : GameManager Game result
     private void Subscribe()
     {
-        GameManager.instance.Subscribe(this);   // GameManager
+        if(GameManager.instance != null)
+            GameManager.instance.Subscribe(this);   // GameManager
     }
     private void UnSubscribe()
     {
-        GameManager.instance.UnSubscribe(this);   // GameManager
+        if (GameManager.instance != null)
+            GameManager.instance.UnSubscribe(this);   // GameManager
     }
     public void OnCompleted()
     {

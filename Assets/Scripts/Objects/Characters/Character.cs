@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public abstract class Character : MonoBehaviour
+public abstract class Character : MonoBehaviour, IObserver<GameManager.GameResult>
 {
 
     // Unity //
@@ -23,6 +23,11 @@ public abstract class Character : MonoBehaviour
 
         //Set default strategy
         SetDefaultStrategy();
+    }
+    protected virtual void Start()
+    {
+        // Observer Pattern
+        Subscribe();
     }
     protected virtual void Update()
     {
@@ -197,4 +202,36 @@ public abstract class Character : MonoBehaviour
     /// <summary>Default Strategy</summary>
     protected abstract void SetDefaultStrategy();
 
+    /////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////
+
+    // Observer Pattern //
+    
+    public virtual void Subscribe()
+    {
+        // GameManager Game result
+        GameManager.instance.Subscribe(this);
+    }
+    public void OnCompleted()
+    {
+        throw new NotImplementedException();
+    }
+    public void OnError(Exception error)
+    {
+        throw new NotImplementedException();
+    }
+    public virtual void OnNext(GameManager.GameResult value)
+    {
+        switch (value)
+        {
+            case GameManager.GameResult.Processing:
+                animator.speed = 1f;
+                break;
+            case GameManager.GameResult.Pause:
+                animator.speed = 0f;
+                break;
+
+        }
+    }
 }

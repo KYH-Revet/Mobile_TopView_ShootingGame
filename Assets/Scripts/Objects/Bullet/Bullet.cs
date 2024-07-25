@@ -51,10 +51,13 @@ public class Bullet : MonoBehaviour, IObserver<GameManager.GameResult>
     }
     public Option option;
 
+    float lifeTime = 5f;
+    float lifeTimer = 0f;
+
     // Unity Component
     private Rigidbody rb;
 
-    //Unity Functions
+    // Unity Functions
     void Awake()
     {
         // Get Rigidbody
@@ -67,6 +70,13 @@ public class Bullet : MonoBehaviour, IObserver<GameManager.GameResult>
     {
         //Move forward with rigidbody
         rb.AddForce(transform.forward * option.speed);
+    }
+    void Update()
+    {
+        // Life Timer
+        lifeTimer += Time.deltaTime;
+        if (lifeTimer > lifeTime)
+            Destroy(gameObject);
     }
     
     void FixedUpdate()
@@ -119,7 +129,7 @@ public class Bullet : MonoBehaviour, IObserver<GameManager.GameResult>
     // Observer Pattern
     void Subscribe()
     {
-        GameManager.instance.Subscribe(this);   //GameManager
+        //GameManager.instance.Subscribe(this);   //GameManager
     }
     void UnSubscribe()
     {

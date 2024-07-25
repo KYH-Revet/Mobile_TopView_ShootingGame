@@ -26,7 +26,7 @@ public class AnimationEventLinker : MonoBehaviour
     public void AttackEnd()
     {
         //Get Boss Component
-        Enemy_Boss boss = link.GetComponent<Enemy_Boss>();
+        Enemy boss = link.GetComponent<Enemy>();
         if (boss != null)
             boss.AttackEnd();
     }

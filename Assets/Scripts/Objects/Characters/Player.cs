@@ -50,13 +50,15 @@ public class Player : Character, IObserver<GameManager.GameResult>, IObservable<
         // One game, One player
         DontDestroyOnLoad(gameObject);
     }
-    void Start()
+    protected override void Start()
     {
         // Observer Pattern
-        Subscribe();
+        base.Start();
 
         //// Damage Reward Test
         //Reward test;
+        //test = new Reward_DamageType_Dot();
+        //test.Rewarding();
         //test = new Reward_Stat_DamageUp();
         //test.Rewarding();
         //test.Rewarding();
@@ -86,7 +88,7 @@ public class Player : Character, IObserver<GameManager.GameResult>, IObservable<
     {
         
     }
-    /// <summary>Input Manager의 기능의 Horizontal, Vectical 값을 이용해 움직이는 Move 함수</summary>
+    /// <summary>Input Manager의 기능의 Horizontal, Vectical 값을 이용해 움직이는 Move 함수 (사용하지 않는 기능)</summary>
     public override bool Move()
     {
         throw new NotImplementedException();
@@ -200,23 +202,22 @@ public class Player : Character, IObserver<GameManager.GameResult>, IObservable<
         bulletOption.damage += damage;
     }
 
-    // Observer Pattern
-    public void Subscribe()
+    // Observer Pattern Observe : Game Result
+    public override void OnNext(GameManager.GameResult value)
     {
-        GameManager.instance.Subscribe(this);
-    }
-    public void OnCompleted()
-    {
-        throw new NotImplementedException();
-    }
-    public void OnError(Exception error)
-    {
-        throw new NotImplementedException();
-    }
-    public void OnNext(GameManager.GameResult value)
-    {
-        Debug.Log(value);
-        ChangeState(_StateMachine.Idle);
+        switch (value)
+        {
+            case GameManager.GameResult.Win:
+            case GameManager.GameResult.Lose:
+                ChangeState(_StateMachine.Idle);
+                break;
+            case GameManager.GameResult.Processing:
+                animator.speed = 1f;
+                break;
+            case GameManager.GameResult.Pause:
+                animator.speed = 0f;
+                break;
+        }
     }
 
     /// <summary> Subject : Player is Move </summary>
@@ -241,6 +242,4 @@ public class Player : Character, IObserver<GameManager.GameResult>, IObservable<
     {
         throw new NotImplementedException();
     }
-
-    
 }

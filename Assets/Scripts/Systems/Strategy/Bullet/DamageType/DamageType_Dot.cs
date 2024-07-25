@@ -4,11 +4,10 @@ using UnityEngine;
 public class DamageType_Dot : MonoBehaviour, IDamaged
 {
     public float damage;
-    int count, dotCount = 4;
+    int count = 0, dotCount = 4;
 
     public void Damaged(Character target, float damage)
     {
-        Debug.Log("도트 데미지");
         if(target.GetComponent<DamageType_Dot>() == null)
             target.gameObject.AddComponent<DamageType_Dot>();
 
@@ -23,8 +22,8 @@ public class DamageType_Dot : MonoBehaviour, IDamaged
     {
         for (; count < dotCount; count++)
         {
-            GetComponent<Character>().HPControll(-(damage / dotCount));
-            yield return new WaitForSeconds(0.25f);
+            GetComponent<Character>().HPControll(-damage);
+            yield return new WaitForSeconds(2f/(dotCount-1));
         }
         Destroy(this);
     }

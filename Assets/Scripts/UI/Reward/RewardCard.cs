@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RewardCard : MonoBehaviour, IObservable<GameManager.GameResult>, IDisposable
+public class RewardCard : MonoBehaviour, IObservable<RewardCard>, IDisposable
 {
     // UI
     [Header("UI")]
@@ -48,22 +48,22 @@ public class RewardCard : MonoBehaviour, IObservable<GameManager.GameResult>, ID
         }
     }
 
-    //Observer Pattern
-    List<IObserver<GameManager.GameResult>> gameResultObservers = new List<IObserver<GameManager.GameResult>>();
-    public IDisposable Subscribe(IObserver<GameManager.GameResult> observer)
+    // Observer Pattern Subject : GameManager GameResult
+    List<IObserver<RewardCard>> gameResultObservers = new List<IObserver<RewardCard>>();
+    public IDisposable Subscribe(IObserver<RewardCard> observer)
     {
         gameResultObservers.Add(observer);
         return this;
     }
-    public void UnSubscribe(IObserver<GameManager.GameResult> observer)
+    public void UnSubscribe(IObserver<RewardCard> observer)
     {
         gameResultObservers.Remove(observer);
     }
     /// <summary> 보상이 선택됨 </summary>
     public void NotifyObserver()
     {
-        foreach (IObserver<GameManager.GameResult> observer in gameResultObservers)
-            observer.OnNext(GameManager.GameResult.StageClear);
+        foreach (IObserver<RewardCard> observer in gameResultObservers)
+            observer.OnNext(this);
     }
     public void Dispose()
     {
