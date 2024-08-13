@@ -43,6 +43,14 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameState>
 
         // Observer Pattern
         Subscribe();
+
+        // Debug Platform
+#if UNITY_IOS || UNITY_ANDROID  // Mobile Touch
+        Debug.Log("IOS or Android");
+#else                           // Test Mouse
+        Debug.Log("PC");
+#endif
+
     }
     void Update()
     {
@@ -53,13 +61,9 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameState>
         // Joystick
 #if UNITY_IOS || UNITY_ANDROID  // Mobile Touch
         OnTouch();
-        Debug.Log("IOS or Android");
 #else                           // Test Mouse
         OnMouseButton();
-        Debug.Log("PC");
 #endif
-
-        //OnTouch();
 
         // Receive input
         if (receivingInput) // Player is Move

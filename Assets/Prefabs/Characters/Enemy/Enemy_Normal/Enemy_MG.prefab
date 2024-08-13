@@ -185,7 +185,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 4932501282658458829}
   stat:
-    maxHp: 120
+    maxHp: 100
     hp: 0
     speed: 3
     damage: 5

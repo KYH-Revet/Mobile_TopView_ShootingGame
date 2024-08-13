@@ -236,10 +236,6 @@ public class Enemy_Boss : Enemy
     }
     public override void Dead()
     {
-        // 승리한 상태에서는 죽지 않음
-        if (GameManager.instance.gameState == GameManager.GameState.Win)
-            return;
-
         // GameManager에 승리 알림
         GameManager.instance.SetGameState(GameManager.GameState.Win);
         base.Dead();

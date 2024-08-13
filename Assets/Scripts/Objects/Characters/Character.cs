@@ -58,21 +58,26 @@ public abstract class Character : MonoBehaviour, IObserver<GameManager.GameState
     /// <param name="value">Character.stat.hp += value</param>
     public virtual void HPControll(float value)
     {
-        //Alive
+        // Game set
+        GameManager.GameState gameState = GameManager.instance.gameState;
+        if(gameState == GameManager.GameState.Win || gameState == GameManager.GameState.Lose)
+            return;
+
+        // Alive
         if (state != _StateMachine.Dead)
         {
-            //Change hp
+            // Change hp
             stat.hp += value;
 
-            //OverHeal
+            // OverHeal
             if (stat.maxHp < stat.hp)
                 stat.hp = stat.maxHp;
 
-            //HP UI synchronization
+            // HP UI synchronization
             if (hpBar != null)
                 hpBar.HPSynchronization();
 
-            //Dead
+            // Dead
             if (stat.hp <= 0)
             {
                 ChangeState(_StateMachine.Dead);

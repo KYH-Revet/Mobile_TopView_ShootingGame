@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.SymbolStore;
 using UnityEngine;
 
 public class WaveManager : MonoBehaviour
@@ -29,6 +30,7 @@ public class WaveManager : MonoBehaviour
     /// 웨이브 번호
     /// </summary>
     public int waveCount = 0;
+    
 
     // Unity Functions
     void Awake()
