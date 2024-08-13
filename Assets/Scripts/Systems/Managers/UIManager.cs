@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    GameManager.GameState beforeGameState;
+
     // Singleton Pattern
     public static UIManager instance { get; private set; }
     
@@ -23,8 +25,15 @@ public class UIManager : MonoBehaviour
         // Reverse the active self
         panel_Pause.SetActive(!panel_Pause.activeSelf);
 
-        // GameManager GameResult = panel On ? Pause : Processing
-        TimeScale(panel_Pause.activeSelf ? 0f : 1f);
+        // GameManager GameState = panel On ? Pause : Processing
+        if (panel_Pause.activeSelf)
+        {
+            // Record last State (Processing or StageClear)
+            beforeGameState = GameManager.instance.gameState;
+            GameManager.instance.SetGameState(GameManager.GameState.Pause);
+        }
+        else
+            GameManager.instance.SetGameState(beforeGameState);
     }
 
     // Turn queued UI on/off
@@ -43,25 +52,10 @@ public class UIManager : MonoBehaviour
         uiQueue.Enqueue(targetUI);
     }
 
-    /// <summary> Time scale </summary>
-    public void TimeScale(float value)
-    {
-        // 나중에 GameManager에 함수를 만들고 호출하게 할 수도 있음
-        switch(value)
-        {
-            case 0:
-                GameManager.instance.SetGameResult(GameManager.GameResult.Pause);
-                break;
-            case 1:
-                GameManager.instance.SetGameResult(GameManager.GameResult.Processing);
-                break;
-        }
-    }
-
     public void BackToLoby()
     {
         // Game Play
-        TimeScale(1f);
+        Time.timeScale = 1.0f;
 
         // Destroy objects who dont destroy
         GameManager.instance.DestroyDontDestroyObject();

@@ -8,7 +8,7 @@ using UnityEngine;
 /// 효과음  : Player의 발포음
 /// </summary>
 
-public class SoundManager : MonoBehaviour, IObserver<GameManager.GameResult>
+public class SoundManager : MonoBehaviour, IObserver<GameManager.GameState>
 {
     // Singleton Pattern
     public static SoundManager instance { get; private set; }
@@ -135,7 +135,7 @@ public class SoundManager : MonoBehaviour, IObserver<GameManager.GameResult>
     {
         Debug.LogError(error.ToString());
     }
-    public void OnNext(GameManager.GameResult value)
+    public void OnNext(GameManager.GameState value)
     {
         try
         {
@@ -145,10 +145,10 @@ public class SoundManager : MonoBehaviour, IObserver<GameManager.GameResult>
             // 게임 결과에 따른 BGM 변경
             switch (value)
             {
-                case GameManager.GameResult.Win:    // 승리
+                case GameManager.GameState.Win:    // 승리
                     nextClip = winBGM;
                     break;
-                case GameManager.GameResult.Lose:   // 패배
+                case GameManager.GameState.Lose:   // 패배
                     nextClip = loseBGM;
                     break;
                 default:                            // 기타(변경없음, 함수 종료)
@@ -164,7 +164,7 @@ public class SoundManager : MonoBehaviour, IObserver<GameManager.GameResult>
         }
         catch (NullReferenceException)
         {
-            Debug.LogError(GameManager.instance.gameResult + "의 BGM이 null입니다.");
+            Debug.LogError(GameManager.instance.gameState + "의 BGM이 null입니다.");
         }
     }
 }

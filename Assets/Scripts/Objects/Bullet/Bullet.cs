@@ -7,7 +7,7 @@ using UnityEngine;
  * Enemy(OnTrigger)     : 총알 관통 O, isTrigger O(NavMesh에 의해 장애물을 비켜감)
 */
 
-public class Bullet : MonoBehaviour, IObserver<GameManager.GameResult>
+public class Bullet : MonoBehaviour, IObserver<GameManager.GameState>
 {
     // Bullet options
     [System.Serializable]
@@ -77,6 +77,15 @@ public class Bullet : MonoBehaviour, IObserver<GameManager.GameResult>
         lifeTimer += Time.deltaTime;
         if (lifeTimer > lifeTime)
             Destroy(gameObject);
+
+        // Velocity
+        if (rb.velocity.magnitude < 0.8)
+        {
+            Vector3 v = rb.velocity.normalized;
+            v *= option.speed;
+            v = v.normalized;
+            rb.velocity.Set(v.x, 0, v.z);
+        }
     }
     
     void FixedUpdate()
@@ -143,7 +152,7 @@ public class Bullet : MonoBehaviour, IObserver<GameManager.GameResult>
     {
         Debug.LogError(error.ToString());
     }
-    public void OnNext(GameManager.GameResult value)
+    public void OnNext(GameManager.GameState value)
     {
         UnSubscribe();
         Destroy(gameObject);

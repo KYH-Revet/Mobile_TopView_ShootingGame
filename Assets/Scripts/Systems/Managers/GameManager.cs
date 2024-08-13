@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 /// 3. 전체 플레이 타임 기록 (playTime)
 /// </summary>
 
-public class GameManager : MonoBehaviour, IObservable<GameManager.GameResult>, IDisposable
+public class GameManager : MonoBehaviour, IObservable<GameManager.GameState>, IDisposable
 {
     // Singleton
     public static GameManager instance { get; private set; }
@@ -24,15 +24,17 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameResult>, I
     }
 
     // Game State
-    public enum GameResult
+    public enum GameState
     {
-        Pause,
-        Processing,
-        StageClear,
-        Win,
-        Lose
+        Pause,          // 일시정지
+        Processing,     // 게임 진행중
+        RewardSelect,   // 보상 선택중
+        StageClear,     // 스테이지 클리어
+        Win,            // 승리
+        Lose            // 패배
     }
-    public GameResult gameResult { get; private set; }
+    public GameState gameState { get; private set; }
+
     [Header("UI")]
     public GameResultScreen gameResultScreen;
 
@@ -42,7 +44,7 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameResult>, I
 
     // 스테이지 클리어 보상 리스트
     [SerializeField][Space]
-    [Tooltip("UI Reward Container")]
+    [Tooltip("Reward(UI) Container")]
     public RewardContainer rewardContainer;
     [SerializeField]
     [Tooltip("Reward List")]
@@ -58,8 +60,8 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameResult>, I
             InstanceSuccession();
         instance = this;
 
-        // GameResult Reset
-        gameResult = GameResult.Processing;
+        // GameState Reset
+        gameState = GameState.Processing;
 
         // Don't Destroy Manager Object
         DontDestroyOnLoad(gameObject);
@@ -67,39 +69,53 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameResult>, I
     void Update()
     {
         // Record play time
-        if (gameResult == GameResult.Processing)
+        if (gameState == GameState.Processing)
             playTime += Time.deltaTime;
     }
 
 
-    // Game Result Functions
+    // Game State Functions
 
-    /// <summary> WaveManager >> StageClear, Boss >> Win, Player >> Lose</summary>
-    /// <param name="gameResult">Processing, StageClear, Win, Lose</param>
-    public void SetGameResult(GameResult gameResult)
+    /// <summary>
+    /// 게임 진행 상태를 변경하는 함수
+    /// </summary>
+    public void SetGameState(GameState gameState)
     {
-        switch (gameResult)
+        // Change the game result
+        switch (gameState)
         {
-            case GameResult.Pause:
-                this.gameResult = gameResult;
+            case GameState.Pause:
+                this.gameState = gameState;
+                break;
+            case GameState.Win:
+            case GameState.Lose:
+                this.gameState = gameState;
+
+                // Result UI On
+                gameResultScreen.gameObject.SetActive(true);    // 보스가 죽고나서 NULL 에러 뜸
+                break;
+            default:
+                if (this.gameState < gameState)
+                    this.gameState = gameState;
+                break;
+        }
+
+        // Time Scale
+        switch (gameState)
+        {
+            case GameState.Processing:
+            case GameState.StageClear:
+                // Time active
+                Time.timeScale = 1f;
+                break;
+            default:
+                // Time Stop (Select Reward)
                 Time.timeScale = 0f;
                 break;
-            case GameResult.Processing:
-            case GameResult.StageClear:
-                if (this.gameResult < gameResult)
-                {
-                    this.gameResult = gameResult;
-                    Time.timeScale = 1f;
-                }
-                break;
-            case GameResult.Win:
-            case GameResult.Lose:
-                this.gameResult = gameResult;
-                gameResultScreen.gameObject.SetActive(true);
-                break;
-
         }
-        NotifyGameResult();
+
+        // Observer Pattern : Game result
+        NotifyGameState();
     }
 
 
@@ -110,13 +126,14 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameResult>, I
     public void NextStage(string sceneName)
     {
         // Rest Observer list
-        observers_GameResult.Clear();
+        observers_GameState.Clear();
 
         // ReSubscribe(Only Player), Player subscribes to GameManager
         Player.instance.Subscribe();
 
         // Game Result => Processing
-        SetGameResult(GameResult.Processing);
+        gameState = GameState.Processing;   // SetGameState()에서 Processing < StageClear라 갱신이 안되는 문제 해결
+        SetGameState(GameState.Processing);
 
         // Load Scene
         SceneManager.LoadScene(sceneName);
@@ -131,21 +148,22 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameResult>, I
         List<Reward> cur_Reward = new List<Reward>();
         for(int i = 0; i < 3; i++)
         {
-            //Random index
+            // Random index
             int idx = UnityEngine.Random.Range(0, rewards.Count);
-            //Keep searching until you find a nonduplicate reward.
+            // Keep searching until you find a nonduplicate reward.
             while (cur_Reward.Contains(rewards[idx]))
                 idx = UnityEngine.Random.Range(0, rewards.Count);
-            //Add reward
+            // Add reward
             cur_Reward.Add(rewards[idx]);
         }
-        //Set reward in container
+        // Set reward in container
         rewardContainer.SetData(cur_Reward);
     }
     /// <summary> 선택된 보상 카운트다운 </summary>
     /// <param name="target"> 보상의 이름 </param>
     public void SelectedReward(string target)
     {
+        // Find selected reward in list for decrease counter
         for(int i = 0; i < rewards.Count; i++)
         {
             if (target == rewards[i].string_Name)
@@ -155,6 +173,9 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameResult>, I
                 break;
             }
         }
+
+        // Game State Change -> StageClear
+        SetGameState(GameState.StageClear);
     }
 
 
@@ -170,27 +191,29 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameResult>, I
 
 
     // Observer Pattern Subject : Game Result
-    List<IObserver<GameResult>> observers_GameResult = new List<IObserver<GameResult>>();
-    public IDisposable Subscribe(IObserver<GameResult> observer)
+    List<IObserver<GameState>> observers_GameState = new List<IObserver<GameState>>();
+    public IDisposable Subscribe(IObserver<GameState> observer)
     {
-        if(!observers_GameResult.Contains(observer))
-            observers_GameResult.Add(observer);
+        if(!observers_GameState.Contains(observer))
+            observers_GameState.Add(observer);
         return this;
     }
-    public void UnSubscribe(IObserver<GameResult> observer)
+    public void UnSubscribe(IObserver<GameState> observer)
     {
-        if(observers_GameResult.Contains(observer))
-            observers_GameResult.Remove(observer);
+        if(observers_GameState.Contains(observer))
+            observers_GameState.Remove(observer);
     }
-    public void NotifyGameResult()
+    public void NotifyGameState()
     {
+        Debug.Log("GameManager.NotifyGameState(" + gameState + ")");
+
         //Reward list update
-        if (gameResult == GameResult.StageClear && rewardContainer != null)
+        if (gameState == GameState.RewardSelect && rewardContainer != null)
             CurrentRewards();
 
         // Send game result data
-        for (int i = observers_GameResult.Count - 1; i >= 0; i--)
-            observers_GameResult[i].OnNext(gameResult);
+        for (int i = observers_GameState.Count - 1; i >= 0; i--)
+            observers_GameState[i].OnNext(gameState);
     }
     void IDisposable.Dispose()
     {

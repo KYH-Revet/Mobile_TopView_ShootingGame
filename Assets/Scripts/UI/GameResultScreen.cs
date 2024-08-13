@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
 
-public class GameResultScreen : MonoBehaviour, IObserver<GameManager.GameResult>
+public class GameResultScreen : MonoBehaviour, IObserver<GameManager.GameState>
 {
     [Header("Text")]
     public Text txt_result; // 게임 결과
@@ -52,17 +52,17 @@ public class GameResultScreen : MonoBehaviour, IObserver<GameManager.GameResult>
     {
         Debug.LogError(error.ToString());
     }
-    public void OnNext(GameManager.GameResult value)
+    public void OnNext(GameManager.GameState value)
     {
         switch(value)
         {
-            case GameManager.GameResult.Win:
-            case GameManager.GameResult.Lose:
+            case GameManager.GameState.Win:
+            case GameManager.GameState.Lose:
                 // UI On
                 gameObject.SetActive(true);
 
                 // Text : Game Result
-                txt_result.text = value == GameManager.GameResult.Win ? "Victory" : "Lose";
+                txt_result.text = value == GameManager.GameState.Win ? "Victory" : "Lose";
 
                 // Text : Play time
                 float time = GameManager.instance.playTime;

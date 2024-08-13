@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// Observ to GameManger
 /// Observ by RewardCard
 /// </summary>
-public class RewardContainer : MonoBehaviour, IObserver<GameManager.GameResult>
+public class RewardContainer : MonoBehaviour, IObserver<GameManager.GameState>
 {
     // Singleton Pattern
     public static RewardContainer instance { get; private set; }
@@ -43,12 +43,13 @@ public class RewardContainer : MonoBehaviour, IObserver<GameManager.GameResult>
     // Observer Pattern
     private void Subsribe()
     {
-        //GameManager
+        // GameManager
         GameManager.instance.Subscribe(this);
-
-        //Reward cards
-        foreach (IObservable<GameManager.GameResult> cards in rewardCards)
-            cards.Subscribe(this);
+    }
+    private void UnSubscribe()
+    {
+        // GameManager
+        GameManager.instance.UnSubscribe(this);
     }
     public void OnCompleted()
     {
@@ -58,19 +59,24 @@ public class RewardContainer : MonoBehaviour, IObserver<GameManager.GameResult>
     {
         Debug.LogError(error.ToString());
     }
-    public void OnNext(GameManager.GameResult value)
+    public void OnNext(GameManager.GameState value)
     {
         switch(value)
         {
             // No more need
-            case GameManager.GameResult.Win:
-            case GameManager.GameResult.Lose:
+            case GameManager.GameState.StageClear:
+            case GameManager.GameState.Win:
+            case GameManager.GameState.Lose:
+                // Observer Pattern
+                UnSubscribe();
+
+                // Destroy
                 Destroy(gameObject);
                 break;
 
             // UI on
-            default:    // Processing or StageClear
-                gameObject.SetActive(!gameObject.activeSelf);
+            case GameManager.GameState.RewardSelect:
+                gameObject.SetActive(true);
                 break;
         }
     }

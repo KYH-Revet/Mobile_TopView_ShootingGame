@@ -9,34 +9,45 @@ public class WaveManager : MonoBehaviour
     public static WaveManager instance { get; private set; }
     
     //Wave variables
-    /// <summary>전체 웨이브 리스트</summary>
+    /// <summary>
+    /// 전체 웨이브 리스트
+    /// </summary>
     public List<Wave> waves = new List<Wave>();
-    /// <summary>이번 웨이브의 적 리스트</summary>
+    /// <summary>
+    /// 이번 웨이브의 적 리스트
+    /// </summary>
     public static List<Transform> cur_wave;
-    /// <summary>이번 웨이브의 각 적과 플레이어 간의 거리 리스트</summary>
+    /// <summary>
+    /// 이번 웨이브의 각 적과 플레이어 간의 거리 리스트
+    /// </summary>
     public static List<float> eachEnemyDistanceFromPlayer;
-    /// <summary>이번 웨이브의 적 수</summary>
+    /// <summary>
+    /// 이번 웨이브의 적 수
+    /// </summary>
     private int enemyCount = 0;
-    /// <summary>웨이브 번호</summary>
+    /// <summary>
+    /// 웨이브 번호
+    /// </summary>
     public int waveCount = 0;
 
-    //Unity Functions
+    // Unity Functions
     void Awake()
     {
+        // Singleton
         instance = this;
     }
     void Update()
     {
-        //Wave Spawn
+        // Wave Spawn
         if (enemyCount <= 0 && waveCount < waves.Count)
             Spawn();
         
-        //Calculate distance of Enemy to Player
+        // Calculate distance of Enemy to Player
         UpdateDistanceFromPlayer();
     }
     
-    //Private Functions
-    private void Spawn()
+    // System Functions
+    void Spawn()
     {
         //List Clear
         if (cur_wave != null)                       cur_wave.Clear();
@@ -55,22 +66,23 @@ public class WaveManager : MonoBehaviour
         }
         enemyCount = cur_wave.Count;
     }
-    private void UpdateDistanceFromPlayer()
+    void UpdateDistanceFromPlayer()
     {
         for (int i = 0; i < cur_wave.Count; i++)
             eachEnemyDistanceFromPlayer[i] = cur_wave[i].GetComponent<Enemy>().DistanceToPlayer();
     }
 
-    //Public Functions
+    // Enemy Counter
     public void EnemyCountDecrease(Transform deadEnemy)
     {
-        //Remove the data of deadEnemy
+        // Remove the data of deadEnemy
         for (int i = 0; i <= cur_wave.Count; i++)
         {
-            //Not found deadEnemy in List(cur_wave)
+            // Not found deadEnemy in List(cur_wave)
             if (i == cur_wave.Count)
                 return;
 
+            // Remove the dead Enemy from enemy list
             if (cur_wave[i] == deadEnemy)
             {
                 cur_wave.RemoveAt(i);
@@ -81,14 +93,19 @@ public class WaveManager : MonoBehaviour
         }
         Destroy(deadEnemy.gameObject);
 
-        //GameOver (StageClear)
-        GameManager.GameResult result = GameManager.instance.gameResult;
-        if (enemyCount <= 0 && waveCount >= waves.Count &&
-            result != GameManager.GameResult.Win && result != GameManager.GameResult.Lose)
-        {
-            GameManager.instance.SetGameResult(GameManager.GameResult.StageClear);
-        }
+        // GameOver (StageClear)
+        GameManager.GameState result = GameManager.instance.gameState;
+        if (result != GameManager.GameState.Win && result != GameManager.GameState.Lose)
+            if (enemyCount <= 0 && waveCount >= waves.Count)
+                GameManager.instance.SetGameState(GameManager.GameState.RewardSelect);
     }
+
+    // Class Function
+
+    /// <summary>
+    /// Player로부터 가장 가까운 Enemy 반환
+    /// </summary>
+    /// <returns>Player로부터 가장 가까운 Enemy의 Transfrom</returns>
     public static Transform ClosestEnemyToPlayer()
     {
         if (cur_wave.Count <= 0)
@@ -103,6 +120,10 @@ public class WaveManager : MonoBehaviour
         
         return cur_wave[min.Item2];
     }
+    /// <summary>
+    /// 이번 Stage의 Enemy가 모두 죽었는지 검사
+    /// </summary>
+    /// <returns>true : Wave가 종료됨, false : Wave가 종료되지 않음</returns>
     public static bool WaveEnd()
     {
         return eachEnemyDistanceFromPlayer == null || eachEnemyDistanceFromPlayer.Count <= 0;

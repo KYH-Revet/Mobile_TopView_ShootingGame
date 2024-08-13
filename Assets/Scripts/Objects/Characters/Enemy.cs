@@ -167,6 +167,10 @@ public abstract class Enemy : Character, IObserver<Player>
     }
     private void UnSubscribe()
     {
+        // GameManager GameResult
+        GameManager.instance.UnSubscribe(this);
+
+        // Player Move Input
         Player.instance.UnSubscribe(this);
     }
     public void OnNext(Player value)

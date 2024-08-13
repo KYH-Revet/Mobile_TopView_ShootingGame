@@ -170,7 +170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08faea4a4d02e7e408bcbfb5e31c1999, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextScene: Stage03
+  nextScene: Stage07
 --- !u!65 &57888041
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -612,7 +612,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waves:
   - {fileID: 1807360233}
-  - {fileID: 0}
   waveCount: 0
 --- !u!4 &370959131
 Transform:

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public abstract class Character : MonoBehaviour, IObserver<GameManager.GameResult>
+public abstract class Character : MonoBehaviour, IObserver<GameManager.GameState>
 {
 
     // Unity //
@@ -216,14 +216,14 @@ public abstract class Character : MonoBehaviour, IObserver<GameManager.GameResul
     {
         throw new NotImplementedException();
     }
-    public virtual void OnNext(GameManager.GameResult value)
+    public virtual void OnNext(GameManager.GameState value)
     {
         switch (value)
         {
-            case GameManager.GameResult.Processing:
+            case GameManager.GameState.Processing:
                 animator.speed = 1f;
                 break;
-            case GameManager.GameResult.Pause:
+            case GameManager.GameState.Pause:
                 animator.speed = 0f;
                 break;
 

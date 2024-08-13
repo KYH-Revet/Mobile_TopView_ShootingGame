@@ -2,7 +2,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using System;
 
-public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameResult>, IObserver<RewardCard>
+public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameState>
 {
     Player player;
     [Tooltip("조이스틱 구성 이미지")]
@@ -28,6 +28,7 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameResult>,
         {
             Debug.LogError("VirtualJoystick.cs : player is null");
             Destroy(gameObject);
+            return;
         }
 
         // Get Rect Transform
@@ -38,7 +39,7 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameResult>,
         ImageAlpha(0f);
 
         // Is working?
-        isWorking = GameManager.instance.gameResult == GameManager.GameResult.Processing;
+        isWorking = GameManager.instance.gameState == GameManager.GameState.Processing;
 
         // Observer Pattern
         Subscribe();
@@ -52,9 +53,13 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameResult>,
         // Joystick
 #if UNITY_IOS || UNITY_ANDROID  // Mobile Touch
         OnTouch();
+        Debug.Log("IOS or Android");
 #else                           // Test Mouse
         OnMouseButton();
+        Debug.Log("PC");
 #endif
+
+        //OnTouch();
 
         // Receive input
         if (receivingInput) // Player is Move
@@ -144,18 +149,16 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameResult>,
             image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
     }
 
-    // Observer Pattern Observe : Game Result
+    // Observer Pattern Observe : Game State
     private void Subscribe()
     {
-        // GameManager GameResult
+        // GameManager GameState
         GameManager.instance.Subscribe(this);
-
-        // Reward cards, Observe = RewardCard(Sign of Reward card Selected)
-        if (RewardContainer.instance != null)
-        {
-            foreach (RewardCard cards in RewardContainer.instance.rewardCards)
-                cards.Subscribe(this);
-        }
+    }
+    private void UnSubscribe()
+    {
+        // GameManager GameState
+        GameManager.instance.UnSubscribe(this);
     }
     public void OnCompleted()
     {
@@ -166,27 +169,27 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameResult>,
         Debug.LogError(error.ToString());
     }
 
-    /// <summary>Observe : Game result Changed</summary>
-    /// <param name="value">GameManaer.instance.gameResult</param>
-    public void OnNext(GameManager.GameResult value)
+    /// <summary>Observe : Game state Changed</summary>
+    /// <param name="value">GameManaer.instance.gameState</param>
+    public void OnNext(GameManager.GameState value)
     {
         switch (value)
         {
-            // UnPause the function
-            case GameManager.GameResult.Processing:
+            // UnPause the stick function
+            case GameManager.GameState.Processing:
+            case GameManager.GameState.StageClear:
                 isWorking = true;
                 break;
 
-            // Pause the function
-            case GameManager.GameResult.StageClear:
-            case GameManager.GameResult.Pause:
-                // Stop receiving input data
+            // Pause the stick function
+            case GameManager.GameState.RewardSelect:
+            case GameManager.GameState.Pause:
                 isWorking = false;
                 break;
 
             // No more need
-            case GameManager.GameResult.Win:
-            case GameManager.GameResult.Lose:
+            case GameManager.GameState.Win:
+            case GameManager.GameState.Lose:
                 Destroy(gameObject);
                 break;
         }
@@ -196,11 +199,5 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameResult>,
 
         // UI Off
         ImageAlpha(0f);
-    }
-    /// <summary>Observe : Reward card selected</summary>
-    /// <param name="value">Subject 구분용</param>
-    public void OnNext(RewardCard value)
-    {
-        isWorking = true;
     }
 }

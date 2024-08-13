@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class StageGate : MonoBehaviour, IObserver<GameManager.GameResult>
+public class StageGate : MonoBehaviour, IObserver<GameManager.GameState>
 {
     [SerializeField]
     string nextScene;
@@ -24,7 +24,7 @@ public class StageGate : MonoBehaviour, IObserver<GameManager.GameResult>
 
             // Player Reset
             Player.instance.ResetPlayer();
-
+            Debug.Log("스테이지 이동");
             // Load Scene
             GameManager.instance.NextStage(nextScene);
         }
@@ -47,8 +47,8 @@ public class StageGate : MonoBehaviour, IObserver<GameManager.GameResult>
     {
         Debug.LogError(error.ToString());
     }
-    public void OnNext(GameManager.GameResult value)
+    public void OnNext(GameManager.GameState value)
     {
-        stageClear = value == GameManager.GameResult.StageClear;
+        stageClear = value == GameManager.GameState.StageClear;
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements.Experimental;
 
-public class Player : Character, IObserver<GameManager.GameResult>, IObservable<Player>, IDisposable
+public class Player : Character, IObserver<GameManager.GameState>, IObservable<Player>, IDisposable
 {
     // Singleton
     public static Player instance { get; private set; }
@@ -152,11 +152,15 @@ public class Player : Character, IObserver<GameManager.GameResult>, IObservable<
     }
     public override void Dead()
     {
-        //Dead Animation 실행
+        // 승리한 상태에서는 죽지 않음
+        if(GameManager.instance.gameState == GameManager.GameState.Win)
+            return;
+
+        // Dead Animation 실행
         animator.SetTrigger("Dead");
         
-        //GameManager에 패배 알림
-        GameManager.instance.SetGameResult(GameManager.GameResult.Lose);
+        // GameManager에 패배 알림
+        GameManager.instance.SetGameState(GameManager.GameState.Lose);
     }
 
     // Set default strategy
@@ -203,18 +207,18 @@ public class Player : Character, IObserver<GameManager.GameResult>, IObservable<
     }
 
     // Observer Pattern Observe : Game Result
-    public override void OnNext(GameManager.GameResult value)
+    public override void OnNext(GameManager.GameState value)
     {
         switch (value)
         {
-            case GameManager.GameResult.Win:
-            case GameManager.GameResult.Lose:
+            case GameManager.GameState.Win:
+            case GameManager.GameState.Lose:
                 ChangeState(_StateMachine.Idle);
                 break;
-            case GameManager.GameResult.Processing:
+            case GameManager.GameState.Processing:
                 animator.speed = 1f;
                 break;
-            case GameManager.GameResult.Pause:
+            case GameManager.GameState.Pause:
                 animator.speed = 0f;
                 break;
         }

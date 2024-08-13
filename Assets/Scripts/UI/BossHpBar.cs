@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class BossHpBar : HPBar, IObserver<GameManager.GameResult>
+public class BossHpBar : HPBar, IObserver<GameManager.GameState>
 {
     // Unity Functions
     void Awake()
@@ -41,7 +41,7 @@ public class BossHpBar : HPBar, IObserver<GameManager.GameResult>
     {
         Debug.LogError(error.ToString());
     }
-    public void OnNext(GameManager.GameResult value)
+    public void OnNext(GameManager.GameState value)
     {
         GameManager.instance.UnSubscribe(this);
         Destroy(gameObject);
