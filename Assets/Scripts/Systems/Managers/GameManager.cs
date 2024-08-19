@@ -142,8 +142,10 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameState>, ID
 
     // Reward Functions
 
-    /// <summary> 3개의 랜덤 보상을 Reward Container에 보내주기 위한 함수 </summary>
-    void CurrentRewards()
+    /// <summary>
+    /// 3개의 랜덤 보상을 Reward Container에 보내주기 위한 함수
+    /// </summary>
+    public void CurrentRewards()
     {
         List<Reward> cur_Reward = new List<Reward>();
         for(int i = 0; i < 3; i++)
@@ -181,7 +183,9 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameState>, ID
 
     // System Functions
 
-    /// <summary> Destroy an object that you set up that don't destroy </summary>
+    /// <summary>
+    /// Destroy an object that you set up that don't destroy
+    /// </summary>
     public void DestroyDontDestroyObject()
     {
         Destroy(Player.instance.gameObject);        // Player
@@ -206,10 +210,6 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameState>, ID
     public void NotifyGameState()
     {
         Debug.Log("GameManager.NotifyGameState(" + gameState + ")");
-
-        //Reward list update
-        if (gameState == GameState.RewardSelect && rewardContainer != null)
-            CurrentRewards();
 
         // Send game result data
         for (int i = observers_GameState.Count - 1; i >= 0; i--)

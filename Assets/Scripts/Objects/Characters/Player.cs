@@ -216,6 +216,7 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
                 ChangeState(_StateMachine.Idle);
                 break;
             case GameManager.GameState.Processing:
+            case GameManager.GameState.StageClear:
                 animator.speed = 1f;
                 break;
             case GameManager.GameState.Pause:

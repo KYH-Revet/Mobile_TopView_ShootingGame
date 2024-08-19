@@ -96,10 +96,21 @@ public class WaveManager : MonoBehaviour
         Destroy(deadEnemy.gameObject);
 
         // GameOver (StageClear)
-        GameManager.GameState result = GameManager.instance.gameState;
-        if (result != GameManager.GameState.Win && result != GameManager.GameState.Lose)
+        GameManager gameMgr = GameManager.instance;
+
+        // Not win && Not Lose == Stage Processing
+        if (gameMgr.gameState != GameManager.GameState.Win && gameMgr.gameState != GameManager.GameState.Lose)
+        {
+            // All enemy is dead
             if (enemyCount <= 0 && waveCount >= waves.Count)
-                GameManager.instance.SetGameState(GameManager.GameState.RewardSelect);
+            {
+                // Set Reward
+                gameMgr.CurrentRewards();
+                
+                // Game Stage = Reward Selecet
+                gameMgr.SetGameState(GameManager.GameState.RewardSelect);
+            }
+        }
     }
 
     // Class Function
