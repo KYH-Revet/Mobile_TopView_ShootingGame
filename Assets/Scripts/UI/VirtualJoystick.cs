@@ -114,15 +114,15 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameState>
                     receivingInput = true;
 
                     // Stick Position
-                    transform.position = Input.GetTouch(0).rawPosition;
-
-                    // StateMachin
-                    player.ChangeState(Character._StateMachine.Move);
+                    transform.position = Input.GetTouch(0).rawPosition;    
                 }
                 break;
             case TouchPhase.Moved:
                 // Update position
                 LeverDrag(Input.GetTouch(0).position);
+
+                // StateMachin
+                player.ChangeState(Character._StateMachine.Move);
                 break;
             case TouchPhase.Ended:
                 // UI Off
