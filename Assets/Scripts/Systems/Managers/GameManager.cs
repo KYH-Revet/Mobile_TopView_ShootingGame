@@ -23,6 +23,21 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameState>, ID
         Destroy(instance.gameObject);
     }
 
+    // Don't destory on load
+    public Stack<GameObject> dontDestroyObjects = new Stack<GameObject>();
+    /// <summary>
+    /// DontDestroyOnLoad 함수 대신 사용할 함수. 시작 Scene으로 돌아갈때 Dont Destory Object들을 한번에 지우기 위함.
+    /// </summary>
+    public void AddDontDestroyObjects(GameObject obj)
+    {
+        // Exception handling : Already contain in the list
+        if (dontDestroyObjects.Contains(obj))
+            return;
+
+        dontDestroyObjects.Push(obj);
+        DontDestroyOnLoad(obj);
+    }
+
     // Game State
     public enum GameState
     {
@@ -64,7 +79,7 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameState>, ID
         gameState = GameState.Processing;
 
         // Don't Destroy Manager Object
-        DontDestroyOnLoad(gameObject);
+        AddDontDestroyObjects(gameObject);
     }
     void Update()
     {
@@ -188,9 +203,9 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameState>, ID
     /// </summary>
     public void DestroyDontDestroyObject()
     {
-        Destroy(Player.instance.gameObject);        // Player
-        Destroy(SoundManager.instance.gameObject);  // SoundManager
-        Destroy(gameObject);                        // GameManager
+        // Don't destroy 처리가 된 Object들 제거
+        while (dontDestroyObjects.Count <= 0)
+            Destroy(dontDestroyObjects.Pop());
     }
 
 

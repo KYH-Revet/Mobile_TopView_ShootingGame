@@ -46,28 +46,15 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
 
         // StateMachine
         ChangeState(_StateMachine.Attack);
-
-        // One game, One player
-        DontDestroyOnLoad(gameObject);
     }
     protected void Start()
     {
         // Observer Pattern
         Subscribe();
 
-        //// Damage Reward Test
-        //Reward test;
-        //test = new Reward_DamageType_Dot();
-        //test.Rewarding();
-        //test = new Reward_Stat_DamageUp();
-        //test.Rewarding();
-        //test.Rewarding();
-        //test.Rewarding();
-        //test.Rewarding();
-
-        //test = new Reward_BulletSpawn_Front();
-        //test.Rewarding();
-        //test.Rewarding();
+        // One game, One player
+        if(GameManager.instance != null)
+            GameManager.instance.AddDontDestroyObjects(gameObject);
     }
     // StateMachine
     public override void StateMachine()

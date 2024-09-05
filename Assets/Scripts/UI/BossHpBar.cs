@@ -43,7 +43,14 @@ public class BossHpBar : HPBar, IObserver<GameManager.GameState>
     }
     public void OnNext(GameManager.GameState value)
     {
-        GameManager.instance.UnSubscribe(this);
-        Destroy(gameObject);
+        // Destroy UI when Win or Lose
+        switch(value)
+        {
+            case GameManager.GameState.Win:
+            case GameManager.GameState.Lose:
+                GameManager.instance.UnSubscribe(this);
+                Destroy(gameObject);
+                break;
+        }
     }
 }

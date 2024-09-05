@@ -5,18 +5,49 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
-{
-    GameManager.GameState beforeGameState;
-
+{    
     // Singleton Pattern
     public static UIManager instance { get; private set; }
-    
+    public bool dontDestroy = true;
+
+    // For Unpause
+    GameManager.GameState beforeGameState;
+
     // Queue for UI On/Off
     static Queue<GameObject> uiQueue = new Queue<GameObject>();
 
+    // Text for stage name
+    [Header("Text")]
+    public Text text_Stage;
+
+    private void Awake()
+    {
+        // Singleton Pattern
+        if (instance != null)
+            Destroy(gameObject);
+        else
+            instance = this;
+    }
+    private void Start()
+    {
+        // Text for stage name
+        if(text_Stage != null)
+            text_Stage.text = SceneManager.GetActiveScene().name;
+
+        // Don't Destroy On Load
+        if (dontDestroy && GameManager.instance != null)
+            GameManager.instance.AddDontDestroyObjects(gameObject);
+    }
     private void Update()
     {
         UIOnOff();
+    }
+
+    // UI values Update
+    public void UIUpdate()
+    {
+        // Text for stage name
+        TextUpdate(text_Stage, SceneManager.GetActiveScene().name);
     }
 
     // Game Pause
@@ -52,6 +83,16 @@ public class UIManager : MonoBehaviour
         uiQueue.Enqueue(targetUI);
     }
 
+    // Stage Text Update
+    void TextUpdate(Text targetUI, string text)
+    {
+        if (targetUI != null)
+            targetUI.text = text;
+        else
+            Debug.LogError(targetUI + " is null!");
+    }
+
+    // Back to Lobby Scene
     public void BackToLoby()
     {
         // Game Play

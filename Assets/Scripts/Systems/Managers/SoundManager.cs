@@ -79,8 +79,7 @@ public class SoundManager : MonoBehaviour, IObserver<GameManager.GameState>
         else
             effectVolume = PlayerPrefs.GetFloat("Volume_Effect");
 
-        // Dont Destroy this
-        DontDestroyOnLoad(gameObject);
+        
     }
     void Start()
     {
@@ -89,6 +88,10 @@ public class SoundManager : MonoBehaviour, IObserver<GameManager.GameState>
 
         // Observer Pattern
         Subscribe();
+
+        // Dont Destroy this
+        if(GameManager.instance != null)
+            GameManager.instance.AddDontDestroyObjects(gameObject);
     }
 
     // Volume Functions
