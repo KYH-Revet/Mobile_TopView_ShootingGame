@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DamageType_Dot : MonoBehaviour, IDamaged
 {
-    public float damage;
+    public float damage = 0;
     int count = 0, dotCount = 4;
 
     public void Damaged(Character target, float damage)

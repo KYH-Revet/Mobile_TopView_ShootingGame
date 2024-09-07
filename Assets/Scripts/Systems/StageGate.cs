@@ -26,9 +26,6 @@ public class StageGate : MonoBehaviour, IObserver<GameManager.GameState>
             Player.instance.ResetPlayer();
             Debug.Log("스테이지 이동");
 
-            // UI Update
-            UIManager.instance.UIUpdate();
-
             // Load Scene
             GameManager.instance.NextStage(nextScene);
         }

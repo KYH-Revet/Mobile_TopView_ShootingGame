@@ -5,14 +5,10 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
-{    
-    // Singleton Pattern
-    public static UIManager instance { get; private set; }
-    public bool dontDestroy = true;
-
+{
     // For Unpause
     GameManager.GameState beforeGameState;
-
+    
     // Queue for UI On/Off
     static Queue<GameObject> uiQueue = new Queue<GameObject>();
 
@@ -20,13 +16,11 @@ public class UIManager : MonoBehaviour
     [Header("Text")]
     public Text text_Stage;
 
+    // Unity functions
     private void Awake()
     {
-        // Singleton Pattern
-        if (instance != null)
-            Destroy(gameObject);
-        else
-            instance = this;
+        // Text for stage name
+        TextUpdate(text_Stage, SceneManager.GetActiveScene().name);
     }
     private void Start()
     {
@@ -35,19 +29,12 @@ public class UIManager : MonoBehaviour
             text_Stage.text = SceneManager.GetActiveScene().name;
 
         // Don't Destroy On Load
-        if (dontDestroy && GameManager.instance != null)
+        if (GameManager.instance != null)
             GameManager.instance.AddDontDestroyObjects(gameObject);
     }
     private void Update()
     {
         UIOnOff();
-    }
-
-    // UI values Update
-    public void UIUpdate()
-    {
-        // Text for stage name
-        TextUpdate(text_Stage, SceneManager.GetActiveScene().name);
     }
 
     // Game Pause

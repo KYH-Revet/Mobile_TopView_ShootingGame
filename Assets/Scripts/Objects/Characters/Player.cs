@@ -80,10 +80,10 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
     {
         throw new NotImplementedException();
 
-        Vector3 inputVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        transform.position += inputVector * stat.speed * Time.deltaTime;    //Translate
-        transform.LookAt(transform.position + inputVector);                 //Rotate
-        return inputVector.magnitude > 0f;
+        //Vector3 inputVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        //transform.position += inputVector * stat.speed * Time.deltaTime;    //Translate
+        //transform.LookAt(transform.position + inputVector);                 //Rotate
+        //return inputVector.magnitude > 0f;
     }
     /// <summary>방향 벡터를 받아와 움직이는 Move 함수</summary>
     public bool Move(Vector3 direction)
