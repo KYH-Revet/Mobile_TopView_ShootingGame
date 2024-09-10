@@ -1,17 +1,21 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour
+public class UIManager : MonoBehaviour, IObserver<GameManager.GameState>
 {
     // For Unpause
     GameManager.GameState beforeGameState;
+
+    [Header("UI Object")]
+    public GameObject uiObj_PauseBtn;
     
     // Queue for UI On/Off
     static Queue<GameObject> uiQueue = new Queue<GameObject>();
-
+    
     // Text for stage name
     [Header("Text")]
     public Text text_Stage;
@@ -28,9 +32,9 @@ public class UIManager : MonoBehaviour
         if(text_Stage != null)
             text_Stage.text = SceneManager.GetActiveScene().name;
 
-        // Don't Destroy On Load
-        if (GameManager.instance != null)
-            GameManager.instance.AddDontDestroyObjects(gameObject);
+        // Observer Pattern
+        if(GameManager.instance != null)
+            GameManager.instance.Subscribe(this);
     }
     private void Update()
     {
@@ -70,17 +74,15 @@ public class UIManager : MonoBehaviour
         uiQueue.Enqueue(targetUI);
     }
 
-    // Stage Text Update
+    // Update the Text UI
     void TextUpdate(Text targetUI, string text)
     {
         if (targetUI != null)
             targetUI.text = text;
-        else
-            Debug.LogError(targetUI + " is null!");
     }
 
-    // Back to Lobby Scene
-    public void BackToLoby()
+    /// <summary>Back to Lobby Scene</summary>
+    public static void BackToLoby()
     {
         // Game Play
         Time.timeScale = 1.0f;
@@ -93,8 +95,40 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary> Game Exit </summary>
-    public void ApplicationExit()
+    public static void ApplicationExit()
     {
         Application.Quit();
+    }
+
+    // Observer Pattern
+    void Subscribe()
+    {
+        // GameManager
+        if(GameManager.instance != null)
+            GameManager.instance.Subscribe(this);
+    }
+    void UnSubscribe()
+    {
+        // GameManager
+        if(GameManager.instance != null)
+            GameManager.instance.UnSubscribe(this);
+    }
+    public void OnCompleted()
+    {
+        throw new NotImplementedException();
+    }
+    public void OnError(Exception error)
+    {
+        throw new NotImplementedException();
+    }
+    public void OnNext(GameManager.GameState gameState)
+    {
+        switch(gameState)
+        {
+            case GameManager.GameState.Win:
+            case GameManager.GameState.Lose:
+            UIOnOff(uiObj_PauseBtn);
+            break;
+        }
     }
 }

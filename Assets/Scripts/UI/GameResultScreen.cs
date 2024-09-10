@@ -32,11 +32,7 @@ public class GameResultScreen : MonoBehaviour, IObserver<GameManager.GameState>
         // Observer Pattern
         GameManager.instance.UnSubscribe(this);
 
-        // Destroy objects who dont destroy
-        GameManager.instance.DestroyDontDestroyObject();
-
-        // Return to lobby
-        SceneManager.LoadScene("StartScene");
+        UIManager.BackToLoby();
     }
 
     // Observer Pattern
@@ -71,6 +67,9 @@ public class GameResultScreen : MonoBehaviour, IObserver<GameManager.GameState>
                 // Text :Stage
                 string sceneName = SceneManager.GetActiveScene().name;
                 txt_stage.text = "Stage " + sceneName.Substring("Stage".Length);
+
+                // UIManager : GameObject off a pause button
+                
                 break;
         }
     }

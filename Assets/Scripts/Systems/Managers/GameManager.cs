@@ -34,7 +34,9 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameState>, ID
         if (dontDestroyObjects.Contains(obj))
             return;
 
+        // Stack add
         dontDestroyObjects.Push(obj);
+        // Dont Destroy On Load
         DontDestroyOnLoad(obj);
     }
 
@@ -204,7 +206,7 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameState>, ID
     public void DestroyDontDestroyObject()
     {
         // Don't destroy 贸府啊 等 Object甸 力芭
-        while (dontDestroyObjects.Count <= 0)
+        while (dontDestroyObjects.Count > 0)
             Destroy(dontDestroyObjects.Pop());
     }
 

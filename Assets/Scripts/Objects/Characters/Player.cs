@@ -7,7 +7,7 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
 {
     // Singleton
     public static Player instance { get; private set; }
-    /// <summary> ±âÁ¸ instanceÀÇ Á¤º¸ °è½Â </summary>
+    /// <summary> ï¿½ï¿½ï¿½ï¿½ instanceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ </summary>
     void InstanceSuccession()
     {
         //Stat
@@ -21,8 +21,8 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
         Destroy(instance.gameObject);
     }
 
-    /// <summary>Raycast¸¦ À§ÇÑ Layer Mask</summary>
-    [Header("Player")][Tooltip("»ç°Ý °¡´ÉÇÑ Enemy¸¦ Ã£´Â Raycast¸¦ À§ÇÑ Layer Mask")]
+    /// <summary>Raycastï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Layer Mask</summary>
+    [Header("Player")][Tooltip("ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Enemyï¿½ï¿½ Ã£ï¿½ï¿½ Raycastï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Layer Mask")]
     public LayerMask targetLayer;
 
     // Sound
@@ -75,7 +75,7 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
     {
         
     }
-    /// <summary>Input ManagerÀÇ ±â´ÉÀÇ Horizontal, Vectical °ªÀ» ÀÌ¿ëÇØ ¿òÁ÷ÀÌ´Â Move ÇÔ¼ö (»ç¿ëÇÏÁö ¾Ê´Â ±â´É)</summary>
+    /// <summary>Input Managerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Horizontal, Vectical ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ Move ï¿½Ô¼ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½)</summary>
     public override bool Move()
     {
         throw new NotImplementedException();
@@ -85,7 +85,7 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
         //transform.LookAt(transform.position + inputVector);                 //Rotate
         //return inputVector.magnitude > 0f;
     }
-    /// <summary>¹æÇâ º¤ÅÍ¸¦ ¹Þ¾Æ¿Í ¿òÁ÷ÀÌ´Â Move ÇÔ¼ö</summary>
+    /// <summary>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½Þ¾Æ¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ Move ï¿½Ô¼ï¿½</summary>
     public bool Move(Vector3 direction)
     {
         //Observer Pattern : Update destination of enemy navmeshagent
@@ -121,7 +121,7 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
                 continue;
             }
 
-            //¸ÂÀºÀûÀÌ ¾ø°Å³ª ÇÑ¹ø ÀÌ»ó ¸Â¾Ò°í ÀÌ¹ø°Ô Å¸°ÙÀÌ¸é ±â·ÏµÈ Àû°ú ÀÌ¹ø ÀûÀÇ °Å¸®ºñ±³
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Å³ï¿½ ï¿½Ñ¹ï¿½ ï¿½Ì»ï¿½ ï¿½Â¾Ò°ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½Ïµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½
             if(!isHit || target != null)
                 minDistanceIdx = WaveManager.eachEnemyDistanceFromPlayer[minDistanceIdx] >= WaveManager.eachEnemyDistanceFromPlayer[i] ? i : minDistanceIdx;
         }
@@ -139,14 +139,14 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
     }
     public override void Dead()
     {
-        // ½Â¸®ÇÑ »óÅÂ¿¡¼­´Â Á×Áö ¾ÊÀ½
+        // ï¿½Â¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if(GameManager.instance.gameState == GameManager.GameState.Win)
             return;
 
-        // Dead Animation ½ÇÇà
-        animator.SetTrigger("Dead");
+        // Dead Animation ï¿½ï¿½ï¿½ï¿½
+        animator.SetTrigger("DEAD");
         
-        // GameManager¿¡ ÆÐ¹è ¾Ë¸²
+        // GameManagerï¿½ï¿½ ï¿½Ð¹ï¿½ ï¿½Ë¸ï¿½
         GameManager.instance.SetGameState(GameManager.GameState.Lose);
     }
 

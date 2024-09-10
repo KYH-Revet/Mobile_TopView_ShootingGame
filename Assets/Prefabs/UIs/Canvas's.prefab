@@ -1226,7 +1226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a42cfb735ccc5e40a2f7819b9f8435e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dontDestroy: 1
+  uiObj_PauseBtn: {fileID: 2880690750123612056}
   text_Stage: {fileID: 4935638084944587979}
 --- !u!1 &2880690750123612056
 GameObject:

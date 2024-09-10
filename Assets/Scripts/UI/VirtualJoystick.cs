@@ -52,6 +52,7 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameState>
 #endif
 
     }
+
     void Update()
     {
         // Do nothing
@@ -64,6 +65,13 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameState>
 #else                           // Test Mouse
         OnMouseButton();
 #endif
+    }
+
+    void FixedUpdate()
+    {
+        // Do nothing
+        if (!isWorking)
+            return;
 
         // Receive input
         if (receivingInput) // Player is Move
