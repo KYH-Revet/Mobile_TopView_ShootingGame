@@ -202,7 +202,8 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameState>
             // No more need
             case GameManager.GameState.Win:
             case GameManager.GameState.Lose:
-                Destroy(gameObject);
+                UnSubscribe();          // Observer Pattern
+                Destroy(gameObject);    // Destroy the joystick
                 break;
         }
 

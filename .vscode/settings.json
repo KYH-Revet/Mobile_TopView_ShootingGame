@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Mobile_TopView_ShootingGame.sln"
+    "dotnet.defaultSolution": "Mob_TV_SG.sln"
 }

@@ -58,31 +58,33 @@ public abstract class Character : MonoBehaviour, IObserver<GameManager.GameState
     /// <param name="value">Character.stat.hp += value</param>
     public virtual void HPControll(float value)
     {
-        // Game set
-        GameManager.GameState gameState = GameManager.instance.gameState;
-        if(gameState == GameManager.GameState.Win || gameState == GameManager.GameState.Lose)
-            return;
-
-        // Alive
-        if (state != _StateMachine.Dead)
+        switch (GameManager.instance.gameState)
         {
-            // Change hp
-            stat.hp += value;
+            case GameManager.GameState.Processing:
+                // Alive
+                if (state != _StateMachine.Dead)
+                {
+                    // Change hp
+                    stat.hp += value;
 
-            // OverHeal
-            if (stat.maxHp < stat.hp)
-                stat.hp = stat.maxHp;
+                    // OverHeal
+                    if (stat.maxHp < stat.hp)
+                        stat.hp = stat.maxHp;
 
-            // HP UI synchronization
-            if (hpBar != null)
-                hpBar.HPSynchronization();
+                    // HP UI synchronization
+                    if (hpBar != null)
+                        hpBar.HPSynchronization();
 
-            // Dead
-            if (stat.hp <= 0)
-            {
-                ChangeState(_StateMachine.Dead);
-                Dead();
-            }
+                    // Dead
+                    if (stat.hp <= 0)
+                    {
+                        ChangeState(_StateMachine.Dead);
+                        Dead();
+                    }
+                }
+                break;
+            default:
+                return;
         }
     }
 
@@ -231,7 +233,6 @@ public abstract class Character : MonoBehaviour, IObserver<GameManager.GameState
             case GameManager.GameState.Pause:
                 animator.speed = 0f;
                 break;
-
         }
     }
 }

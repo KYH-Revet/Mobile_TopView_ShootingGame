@@ -87,6 +87,9 @@ public class UIManager : MonoBehaviour, IObserver<GameManager.GameState>
         // Game Play
         Time.timeScale = 1.0f;
 
+        // Observer Pattern (Destroy the Bullet)
+        GameManager.instance.SetGameState(GameManager.GameState.Lose);
+        
         // Destroy objects who dont destroy
         GameManager.instance.DestroyDontDestroyObject();
 

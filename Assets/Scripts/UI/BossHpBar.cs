@@ -6,12 +6,16 @@ public class BossHpBar : HPBar, IObserver<GameManager.GameState>
     // Unity Functions
     void Awake()
     {
-
+        
     }
     void Start()
     {
         // Observer Pattern
         Subscribe();
+    }
+    void Update()
+    {
+        
     }
 
     // Calling from other script(Character.GetDamage()

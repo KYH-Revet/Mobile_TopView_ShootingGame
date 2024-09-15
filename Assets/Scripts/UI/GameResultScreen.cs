@@ -30,8 +30,9 @@ public class GameResultScreen : MonoBehaviour, IObserver<GameManager.GameState>
     public void Btn_Confirm()
     {
         // Observer Pattern
-        GameManager.instance.UnSubscribe(this);
+        UnSubscribe();
 
+        // Back to loby
         UIManager.BackToLoby();
     }
 
@@ -39,6 +40,10 @@ public class GameResultScreen : MonoBehaviour, IObserver<GameManager.GameState>
     private void Subscribe()
     {
         GameManager.instance.Subscribe(this);   // GameManager
+    }
+    private void UnSubscribe()
+    {
+        GameManager.instance.UnSubscribe(this);
     }
     public void OnCompleted()
     {

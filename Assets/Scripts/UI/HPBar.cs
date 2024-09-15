@@ -5,11 +5,12 @@ using UnityEngine.Animations;
 
 public class HPBar : MonoBehaviour
 {
-    public Character owner;
+    [SerializeField]
+    protected Character owner;
     [SerializeField]
     protected RectTransform cur_hp;
 
-    void Awake()
+    private void Awake()
     {
         //Find parent who have a Character Component
         Transform cur = transform;
@@ -17,7 +18,7 @@ public class HPBar : MonoBehaviour
             cur = cur.parent;
         owner = cur.GetComponent<Character>();
     }
-    void Update()
+    private void Update()
     {
         transform.rotation = Quaternion.Euler(45f, 0, 0);
     }

@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /*
- * Player(OnCollision)  : ÃÑ¾Ë °üÅë X, isTrigger X(Á¶ÀÛ¿¡ ÀÇÇØ Àå¾Ö¹°À» Ä§¹üÇÏÁö ¾Ê±â À§ÇÔ)
- * Enemy(OnTrigger)     : ÃÑ¾Ë °üÅë O, isTrigger O(NavMesh¿¡ ÀÇÇØ Àå¾Ö¹°À» ºñÄÑ°¨)
+ * Player(OnCollision)  : ï¿½Ñ¾ï¿½ ï¿½ï¿½ï¿½ï¿½ X, isTrigger X(ï¿½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ Ä§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½)
+ * Enemy(OnTrigger)     : ï¿½Ñ¾ï¿½ ï¿½ï¿½ï¿½ï¿½ O, isTrigger O(NavMeshï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ°ï¿½)
 */
 
 public class Bullet : MonoBehaviour, IObserver<GameManager.GameState>
 {
     // Bullet options
     [System.Serializable]
-    /// <summary>BulletÀÇ µ¥¹ÌÁöÅ¸ÀÔ, Æ¨±è¿©ºÎ, °üÅë¿©ºÎ, Æ¨±â´Â È½¼ö(Private)¸¦ ÀúÀåÇÑ ±¸Á¶Ã¼</summary>
+    /// <summary>Bulletï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½, Æ¨ï¿½è¿©ï¿½ï¿½, ï¿½ï¿½ï¿½ë¿©ï¿½ï¿½, Æ¨ï¿½ï¿½ï¿½ È½ï¿½ï¿½(Private)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼</summary>
     public struct Option
     {
-        public List<string> damageType; // Damage type(ÇöÀç ÃÖ´ë 2°³)
+        public List<string> damageType; // Damage type(ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ 2ï¿½ï¿½)
         public float damage;            // Damage value
         public bool bounce, penetrate;  // Bounce, Penetrate
         public int bounceCount;         // Bounce count
@@ -68,7 +68,7 @@ public class Bullet : MonoBehaviour, IObserver<GameManager.GameState>
     }
     void Start()
     {
-        //Move forward with rigidbody
+        // Move forward with rigidbody
         rb.AddForce(transform.forward * option.speed);
     }
     void Update()
@@ -77,6 +77,12 @@ public class Bullet : MonoBehaviour, IObserver<GameManager.GameState>
         lifeTimer += Time.deltaTime;
         if (lifeTimer > lifeTime)
             Destroy(gameObject);
+    }
+    void FixedUpdate()
+    {
+        // Look at forward
+        if (option.bounce && transform.forward != rb.velocity.normalized)
+            transform.forward = rb.velocity.normalized;
 
         // Velocity
         if (rb.velocity.magnitude < 0.8)
@@ -87,19 +93,13 @@ public class Bullet : MonoBehaviour, IObserver<GameManager.GameState>
             rb.velocity.Set(v.x, 0, v.z);
         }
     }
-    
-    void FixedUpdate()
-    {
-        // Look at forward
-        if (option.bounce && transform.forward != rb.velocity.normalized)
-            transform.forward = rb.velocity.normalized;
-    }
-    // Player(OnCollision)  : ÃÑ¾Ë °üÅë X, isTrigger X(ÇÃ·¹ÀÌ¾î°¡ Àå¾Ö¹°À» °üÅëÇÏÁö ¾Ê°Ô ÇÏ±â À§ÇÔ)
+
+    // Player(OnCollision)  : ï¿½Ñ¾ï¿½ ï¿½ï¿½ï¿½ï¿½ X, isTrigger X(ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½)
     void OnCollisionEnter(Collision collision)
     {
         Hit(collision.gameObject.GetComponent<Character>());
     }
-    // Enemy(OnTrigger)     : ÃÑ¾Ë °üÅë O, isTrigger O(NavMesh¿¡ ÀÇÇØ Àå¾Ö¹°À» ºñÄÑ°¨)
+    // Enemy(OnTrigger)     : ï¿½Ñ¾ï¿½ ï¿½ï¿½ï¿½ï¿½ O, isTrigger O(NavMeshï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ°ï¿½)
     void OnTriggerEnter(Collider other)
     {
         Hit(other.GetComponent<Character>());
@@ -138,11 +138,11 @@ public class Bullet : MonoBehaviour, IObserver<GameManager.GameState>
     // Observer Pattern
     void Subscribe()
     {
-        //GameManager.instance.Subscribe(this);   //GameManager
+        GameManager.instance.Subscribe(this);   // GameManager
     }
     void UnSubscribe()
     {
-        GameManager.instance.UnSubscribe(this);
+        GameManager.instance.UnSubscribe(this); // GameManager
     }
     public void OnCompleted()
     {
@@ -154,7 +154,15 @@ public class Bullet : MonoBehaviour, IObserver<GameManager.GameState>
     }
     public void OnNext(GameManager.GameState value)
     {
-        UnSubscribe();
-        Destroy(gameObject);
+        // ê²Œì„ì˜ ê²°ê³¼ê°€ ì •í•´ì§€ëŠ” ìˆœê°„ Bullet Object íŒŒê´´
+        switch(value)
+        {
+            case GameManager.GameState.StageClear:
+            case GameManager.GameState.Win:
+            case GameManager.GameState.Lose:
+                UnSubscribe();
+                Destroy(gameObject);
+                break;
+        }
     }
 }
