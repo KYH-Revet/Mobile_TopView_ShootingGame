@@ -156,25 +156,27 @@ public abstract class Enemy : Character, IObserver<Player>
     // Set Strategy
     protected abstract override void SetDefaultStrategy();
 
-    // Observer Pattern Observe : Player Move Input
+    // Observer Pattern Observe : GameManager.GameState, Player Move Input
     public override void Subscribe()
     {
-        // GameManager GameResult
+        // GameManager.GameState for animation(GameState.Lose)
         base.Subscribe();
 
         // Player Move Input
         Player.instance.Subscribe(this);
     }
-    private void UnSubscribe()
+    public override void UnSubscribe()
     {
-        // GameManager GameResult
-        GameManager.instance.UnSubscribe(this);
+        // GameManager.GameState for animation(GameState.Lose)
+        base.UnSubscribe();
 
         // Player Move Input
         Player.instance.UnSubscribe(this);
     }
+    // Observer : Position of playerd
     public void OnNext(Player value)
     {
+        // Update destination
         if (positioning)
             navMeshAgent.SetDestination(target.position);
     }

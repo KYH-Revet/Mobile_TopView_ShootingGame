@@ -43,7 +43,7 @@ public class GameResultScreen : MonoBehaviour, IObserver<GameManager.GameState>
     }
     private void UnSubscribe()
     {
-        GameManager.instance.UnSubscribe(this);
+        GameManager.instance.UnSubscribe(this); // GameManager
     }
     public void OnCompleted()
     {
@@ -67,7 +67,11 @@ public class GameResultScreen : MonoBehaviour, IObserver<GameManager.GameState>
 
                 // Text : Play time
                 float time = GameManager.instance.playTime;
-                txt_time.text = ((int)(time / 60)).ToString() + ":" + ((int)(time % 60)).ToString();
+                string m = ((int)(time / 60)) < 10 ?
+                    "0" + ((int)(time / 60)).ToString() : ((int)(time / 60)).ToString();
+                string s = ((int)(time % 60)) < 10 ?
+                    "0" + ((int)(time % 60)).ToString() : ((int)(time % 60)).ToString();
+                txt_time.text = m + ":" + s;
 
                 // Text :Stage
                 string sceneName = SceneManager.GetActiveScene().name;

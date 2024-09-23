@@ -7,7 +7,7 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
 {
     // Singleton
     public static Player instance { get; private set; }
-    /// <summary> ���� instance�� ���� ��� </summary>
+    /// <summary> Succeeding instance data </summary>
     void InstanceSuccession()
     {
         //Stat
@@ -21,8 +21,8 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
         Destroy(instance.gameObject);
     }
 
-    /// <summary>Raycast�� ���� Layer Mask</summary>
-    [Header("Player")][Tooltip("��� ������ Enemy�� ã�� Raycast�� ���� Layer Mask")]
+    /// <summary> Layer Mask for raycast to target </summary>
+    [Header("Player")][Tooltip("Raycast Layer Mask")]
     public LayerMask targetLayer;
 
     // Sound
@@ -139,14 +139,14 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
     }
     public override void Dead()
     {
-        // �¸��� ���¿����� ���� ����
+        // Never die when win
         if(GameManager.instance.gameState == GameManager.GameState.Win)
             return;
 
-        // Dead Animation ����
+        // Dead Animation
         animator.SetTrigger("DEAD");
         
-        // GameManager�� �й� �˸�
+        // Game state -> lose
         GameManager.instance.SetGameState(GameManager.GameState.Lose);
     }
 
@@ -196,22 +196,28 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
     // Observer Pattern Observe : Game Result
     public override void OnNext(GameManager.GameState value)
     {
+        // Animator speed
+        switch (value)
+        {
+            case GameManager.GameState.Processing:
+            case GameManager.GameState.StageClear:
+                animator.speed = 1f;
+                break;
+            default:
+                animator.speed = 0f;
+                break;
+        }
+
+        // State change
         switch (value)
         {
             case GameManager.GameState.Win:
             case GameManager.GameState.Lose:
                 ChangeState(_StateMachine.Idle);
                 break;
-            case GameManager.GameState.Processing:
-            case GameManager.GameState.StageClear:
-                animator.speed = 1f;
-                break;
-            case GameManager.GameState.Pause:
-                animator.speed = 0f;
-                break;
         }
     }
-
+    
     /// <summary> Subject : Player is Move </summary>
     List<IObserver<Player>> observers_PlayerMove = new List<IObserver<Player>>();
     /// <summary> Subject : Player is Move </summary>

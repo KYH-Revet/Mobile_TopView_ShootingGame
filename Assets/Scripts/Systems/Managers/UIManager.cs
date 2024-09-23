@@ -33,8 +33,7 @@ public class UIManager : MonoBehaviour, IObserver<GameManager.GameState>
             text_Stage.text = SceneManager.GetActiveScene().name;
 
         // Observer Pattern
-        if(GameManager.instance != null)
-            GameManager.instance.Subscribe(this);
+        Subscribe();
     }
     private void Update()
     {
@@ -87,7 +86,7 @@ public class UIManager : MonoBehaviour, IObserver<GameManager.GameState>
         // Game Play
         Time.timeScale = 1.0f;
 
-        // Observer Pattern (Destroy the Bullet)
+        // Observer Pattern (For destroy the Bullets)
         GameManager.instance.SetGameState(GameManager.GameState.Lose);
         
         // Destroy objects who dont destroy

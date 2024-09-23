@@ -37,6 +37,10 @@ public class BossHpBar : HPBar, IObserver<GameManager.GameState>
     {
         GameManager.instance.Subscribe(this);   //GameManger
     }
+    public void UnSubscribe()
+    {
+        GameManager.instance.UnSubscribe(this); //GameManger
+    }
     public void OnCompleted()
     {
         throw new NotImplementedException();
@@ -52,8 +56,8 @@ public class BossHpBar : HPBar, IObserver<GameManager.GameState>
         {
             case GameManager.GameState.Win:
             case GameManager.GameState.Lose:
-                GameManager.instance.UnSubscribe(this);
-                Destroy(gameObject);
+                UnSubscribe();          // Observer Pattern
+                Destroy(gameObject);    // Destroy UI
                 break;
         }
     }

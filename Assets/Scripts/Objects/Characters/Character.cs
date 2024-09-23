@@ -215,7 +215,12 @@ public abstract class Character : MonoBehaviour, IObserver<GameManager.GameState
         // GameManager Game result
         GameManager.instance.Subscribe(this);
     }
-    public void OnCompleted()
+    public virtual void UnSubscribe()
+    {
+        // GameManager Game result
+        GameManager.instance.UnSubscribe(this);
+    }
+    public virtual void OnCompleted()
     {
         throw new NotImplementedException();
     }
@@ -225,12 +230,14 @@ public abstract class Character : MonoBehaviour, IObserver<GameManager.GameState
     }
     public virtual void OnNext(GameManager.GameState value)
     {
+        // Character animation
         switch (value)
         {
             case GameManager.GameState.Processing:
+            case GameManager.GameState.StageClear:
                 animator.speed = 1f;
                 break;
-            case GameManager.GameState.Pause:
+            default:
                 animator.speed = 0f;
                 break;
         }
