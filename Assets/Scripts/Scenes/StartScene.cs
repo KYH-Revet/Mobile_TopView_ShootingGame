@@ -9,6 +9,10 @@ public class StartScene : MonoBehaviour
 
     public void GameStart()
     {
+        // Time Scale always 1
+        Time.timeScale = 1f;
+
+        // Load Scene
         SceneManager.LoadScene(sceneName);
     }
 }

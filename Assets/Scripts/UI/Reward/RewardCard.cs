@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static GameManager;
 
 public class RewardCard : MonoBehaviour
 {
@@ -33,11 +34,16 @@ public class RewardCard : MonoBehaviour
         try
         {
             // Rewarding
-            reward.Rewarding();
-            GameManager.instance.SelectedReward(reward.string_Name);
+            if (reward.Rewarding())
+            {
+                // Selected reward count -1
+                GameManager.instance.SelectedReward(reward.string_Name);
 
-            // Notify Game state changed
-            GameManager.instance.SetGameState(GameManager.GameState.StageClear);
+                // Game State Change -> StageClear
+                GameManager.instance.SetGameState(GameState.StageClear);
+            }
+            else
+                Debug.LogError("Rewarding failed");
         }
         catch (NullReferenceException)
         {

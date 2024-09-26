@@ -6,7 +6,7 @@ public class BossHpBar : HPBar, IObserver<GameManager.GameState>
     // Unity Functions
     void Awake()
     {
-        
+        // Do not working   
     }
     void Start()
     {
@@ -15,7 +15,7 @@ public class BossHpBar : HPBar, IObserver<GameManager.GameState>
     }
     void Update()
     {
-        
+        // Do not working
     }
 
     // Calling from other script(Character.GetDamage()

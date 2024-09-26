@@ -61,7 +61,7 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameState>
 
         // Joystick
 #if UNITY_IOS || UNITY_ANDROID  // Mobile Touch
-        OnTouch();
+            OnTouch();
 #else                           // Test Mouse
         OnMouseButton();
 #endif

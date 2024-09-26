@@ -76,7 +76,7 @@ public class Bullet : MonoBehaviour, IObserver<GameManager.GameState>
         // Life Timer
         lifeTimer += Time.deltaTime;
         if (lifeTimer > lifeTime)
-            Destroy(gameObject);
+            Destroy();  // Destroy this bullet
     }
     void FixedUpdate()
     {
@@ -128,10 +128,16 @@ public class Bullet : MonoBehaviour, IObserver<GameManager.GameState>
                 return;
         }
 
-        // Observer Pattern
-        UnSubscribe();
+        // Destroy this bullet
+        Destroy();
+    }
 
-        // Bullet Destroy
+    // Destroy
+    void Destroy()
+    {
+        // ObserverPattern
+        UnSubscribe();
+        // GameObject Destroy
         Destroy(gameObject);
     }
 
@@ -160,8 +166,8 @@ public class Bullet : MonoBehaviour, IObserver<GameManager.GameState>
             case GameManager.GameState.StageClear:
             case GameManager.GameState.Win:
             case GameManager.GameState.Lose:
-                UnSubscribe();
-                Destroy(gameObject);
+                // Position.y -1000
+                transform.Translate(0, -1000, 0);
                 break;
         }
     }

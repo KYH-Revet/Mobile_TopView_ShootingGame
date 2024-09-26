@@ -60,14 +60,17 @@ public abstract class Character : MonoBehaviour, IObserver<GameManager.GameState
     {
         switch (GameManager.instance.gameState)
         {
-            case GameManager.GameState.Processing:
+            case GameManager.GameState.Win:
+            case GameManager.GameState.Lose:
+                break;
+            default:
                 // Alive
                 if (state != _StateMachine.Dead)
                 {
                     // Change hp
                     stat.hp += value;
 
-                    // OverHeal
+                    // Over healing, hp = max hp
                     if (stat.maxHp < stat.hp)
                         stat.hp = stat.maxHp;
 
@@ -82,8 +85,6 @@ public abstract class Character : MonoBehaviour, IObserver<GameManager.GameState
                         Dead();
                     }
                 }
-                break;
-            default:
                 return;
         }
     }

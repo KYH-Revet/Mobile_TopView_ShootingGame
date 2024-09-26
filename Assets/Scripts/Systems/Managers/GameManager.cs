@@ -60,7 +60,8 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameState>, ID
     public float playTime = 0f;
 
     // 스테이지 클리어 보상 리스트
-    [SerializeField][Space]
+    [SerializeField]
+    [Space]
     [Tooltip("Reward(UI) Container")]
     public RewardContainer rewardContainer;
     [SerializeField]
@@ -192,9 +193,6 @@ public class GameManager : MonoBehaviour, IObservable<GameManager.GameState>, ID
                 break;
             }
         }
-
-        // Game State Change -> StageClear
-        SetGameState(GameState.StageClear);
     }
 
 

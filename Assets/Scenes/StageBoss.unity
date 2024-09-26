@@ -135,6 +135,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7321286233043378714, guid: 36caf6cb5ab19e044bfd93894e3fba84, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7321286233043378714, guid: 36caf6cb5ab19e044bfd93894e3fba84, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7321286233043378714, guid: 36caf6cb5ab19e044bfd93894e3fba84, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7321286233043378714, guid: 36caf6cb5ab19e044bfd93894e3fba84, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -180,15 +192,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7705002059357298524, guid: 36caf6cb5ab19e044bfd93894e3fba84, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7705002059357298524, guid: 36caf6cb5ab19e044bfd93894e3fba84, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7705002059357298524, guid: 36caf6cb5ab19e044bfd93894e3fba84, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8878177293251983521, guid: 36caf6cb5ab19e044bfd93894e3fba84, type: 3}
       propertyPath: hpBar
@@ -373,8 +385,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waves:
   - {fileID: 1807360233}
-  - {fileID: 0}
-  - {fileID: 0}
   waveCount: 0
 --- !u!4 &370959131
 Transform:

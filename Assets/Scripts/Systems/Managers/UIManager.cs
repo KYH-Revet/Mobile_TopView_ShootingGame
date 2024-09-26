@@ -70,6 +70,7 @@ public class UIManager : MonoBehaviour, IObserver<GameManager.GameState>
     // Add UI(On/Off) in queue
     public void UIOnOff(GameObject targetUI)
     {
+        //targetUI.SetActive(!targetUI.activeSelf);
         uiQueue.Enqueue(targetUI);
     }
 
@@ -82,15 +83,15 @@ public class UIManager : MonoBehaviour, IObserver<GameManager.GameState>
 
     /// <summary>Back to Lobby Scene</summary>
     public static void BackToLoby()
-    {
-        // Game Play
-        Time.timeScale = 1.0f;
-
+    {        
         // Observer Pattern (For destroy the Bullets)
-        GameManager.instance.SetGameState(GameManager.GameState.Lose);
-        
+        GameManager.instance.SetGameState(GameManager.GameState.StageClear);
+
         // Destroy objects who dont destroy
         GameManager.instance.DestroyDontDestroyObject();
+
+        // Game Play
+        Time.timeScale = 1.0f;
 
         // Return to lobby
         SceneManager.LoadScene("StartScene");

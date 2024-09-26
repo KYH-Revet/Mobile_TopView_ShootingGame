@@ -12,7 +12,7 @@ public class HPBar : MonoBehaviour
 
     private void Awake()
     {
-        //Find parent who have a Character Component
+        // Find parent who have a Character Component
         Transform cur = transform;
         while (cur.parent != null && cur.GetComponent<Character>() == null)
             cur = cur.parent;
@@ -23,7 +23,7 @@ public class HPBar : MonoBehaviour
         transform.rotation = Quaternion.Euler(45f, 0, 0);
     }
 
-    //Calling from other script(Character.GetDamage()
+    // Calling from other script(Character.GetDamage()
     public virtual void HPSynchronization()
     {
         if (owner == null)
