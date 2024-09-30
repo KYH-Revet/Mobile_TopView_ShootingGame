@@ -99,7 +99,7 @@ public class UIManager : MonoBehaviour, IObserver<GameManager.GameState>
 
     /// <summary> Game Exit </summary>
     public static void ApplicationExit()
-    {
+    {       
         Application.Quit();
     }
 

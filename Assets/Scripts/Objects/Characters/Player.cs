@@ -56,6 +56,7 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
         if(GameManager.instance != null)
             GameManager.instance.AddDontDestroyObjects(gameObject);
     }
+
     // StateMachine
     public override void StateMachine()
     {
@@ -75,17 +76,12 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
     {
         
     }
-    /// <summary>Input Manager�� ����� Horizontal, Vectical ���� �̿��� �����̴� Move �Լ� (������� �ʴ� ���)</summary>
+    /// <summary>Empty Function. Not working. Use function the Move(Vector3 direction)</summary>
     public override bool Move()
     {
         throw new NotImplementedException();
-
-        //Vector3 inputVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        //transform.position += inputVector * stat.speed * Time.deltaTime;    //Translate
-        //transform.LookAt(transform.position + inputVector);                 //Rotate
-        //return inputVector.magnitude > 0f;
     }
-    /// <summary>���� ���͸� �޾ƿ� �����̴� Move �Լ�</summary>
+    /// <summary>Move Function with direction vector</summary>
     public bool Move(Vector3 direction)
     {
         //Observer Pattern : Update destination of enemy navmeshagent
@@ -142,9 +138,6 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
         // Never die when win
         if(GameManager.instance.gameState == GameManager.GameState.Win)
             return;
-
-        // Dead Animation
-        animator.SetTrigger("DEAD");
         
         // Game state -> lose
         GameManager.instance.SetGameState(GameManager.GameState.Lose);

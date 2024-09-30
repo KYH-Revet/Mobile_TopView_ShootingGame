@@ -33,6 +33,13 @@ public abstract class Enemy : Character, IObserver<Player>
         attackDelay_Cur = attackDelay;
     }
 
+    public override void HPControll(float value)
+    {
+        base.HPControll(value);
+        if (state == _StateMachine.Dead)
+            Dead();
+    }
+
     // System Funtions
     /// <summary>공격 후 다음 공격을 위한 대기 시간</summary>
     /// <returns> true = Ready to attack, false = Waiting</returns>

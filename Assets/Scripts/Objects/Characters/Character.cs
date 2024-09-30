@@ -56,6 +56,7 @@ public abstract class Character : MonoBehaviour, IObserver<GameManager.GameState
     public Stat stat = new Stat();
     /// <summary>Character의 Stat.hp를 조작하는 함수</summary>
     /// <param name="value">Character.stat.hp += value</param>
+
     public virtual void HPControll(float value)
     {
         switch (GameManager.instance.gameState)
@@ -80,12 +81,9 @@ public abstract class Character : MonoBehaviour, IObserver<GameManager.GameState
 
                     // Dead
                     if (stat.hp <= 0)
-                    {
                         ChangeState(_StateMachine.Dead);
-                        Dead();
-                    }
                 }
-                return;
+                break;
         }
     }
 
@@ -173,6 +171,9 @@ public abstract class Character : MonoBehaviour, IObserver<GameManager.GameState
             return;
         state = nextState;
         animator.SetInteger("State", (int)nextState);
+
+        if (state == _StateMachine.Dead)
+            animator.SetTrigger("Dead");
     }
 
     /////////////////////////////////////////////////////////////////////////

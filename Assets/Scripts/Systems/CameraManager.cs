@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CamFollowPlayer : MonoBehaviour
+public class CameraManager : MonoBehaviour
 {
     Transform target;
 
@@ -13,19 +13,26 @@ public class CamFollowPlayer : MonoBehaviour
     public float min = 0;
     public float max = 19;
 
+    [Header("Letter Box")]
+    public bool letterBox = true;
+    public Vector2 resolutionRatio = new Vector2(9f, 16f);
+
     // Start is called before the first frame update
     void Start()
     {
-        target = Player.instance.transform;
+        if(Player.instance != null)
+            target = Player.instance.transform;
 
-        LetterBox();
+        if(letterBox)
+            LetterBox();
     }
 
     
     // Update is called once per frame
     void Update()
     {
-        Follow();
+        if ((target != null))
+            Follow();
     }
 
     // Outside from letter box
@@ -44,21 +51,19 @@ public class CamFollowPlayer : MonoBehaviour
     {
         Camera camera = GetComponent<Camera>();
         Rect rect = camera.rect;
-        float scaleheight = ((float)Screen.width / Screen.height) / (9f / 16f); // (가로 / 세로)
+        float scaleheight = ((float)Screen.width / Screen.height) / (resolutionRatio.x / resolutionRatio.y); // (가로 / 세로)
         float scalewidth = 1f / scaleheight;
         
-        if (scaleheight < 1)    // 
+        if (scaleheight < 1)
         {
             rect.height = scaleheight;
             rect.y = (1f - scaleheight) / 2f;
         }
-        else                    // 
+        else
         {
             rect.width = scalewidth;
             rect.x = (1f - scalewidth) / 2f;
         }
         camera.rect = rect;
     }
-
-    
 }

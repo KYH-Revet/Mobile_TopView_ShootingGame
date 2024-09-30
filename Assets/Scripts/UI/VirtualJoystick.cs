@@ -61,7 +61,7 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameState>
 
         // Joystick
 #if UNITY_IOS || UNITY_ANDROID  // Mobile Touch
-            OnTouch();
+        OnTouch();
 #else                           // Test Mouse
         OnMouseButton();
 #endif
@@ -122,7 +122,7 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameState>
                     receivingInput = true;
 
                     // Stick Position
-                    transform.position = Input.GetTouch(0).rawPosition;    
+                    transform.position = Input.GetTouch(0).rawPosition;
                 }
                 break;
             case TouchPhase.Moved:
@@ -145,14 +145,15 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameState>
     void LeverDrag(Vector2 eventPos)
     {
         // Direction vector
-        var inputPos = eventPos - rectTransform.anchoredPosition;
+        var inputPos = eventPos - (Vector2)transform.position;
         // Input vector = 0 ~ lever range
         var inputVector = inputPos.magnitude < leverRange ? inputPos : inputPos.normalized * leverRange;
-        // Repositioning to stick
+        // Repositioning to lever(Red circle)
         lever.anchoredPosition = inputVector;
         // Input direction = 0 ~ 1
         inputDirection = inputVector / leverRange;
     }
+
 
     // UI Function
     void ImageAlpha(float alpha)
