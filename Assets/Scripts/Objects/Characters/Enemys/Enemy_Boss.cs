@@ -73,7 +73,7 @@ public class Enemy_Boss : Enemy
     public override void HPControll(float value)
     {
         // Alive
-        if (state != _StateMachine.Dead)
+        if (_state != _StateMachine.Dead)
         {
             // Change hp
             stat.hp += value;
@@ -189,7 +189,7 @@ public class Enemy_Boss : Enemy
     // StateMachine //
     public override void StateMachine()
     {
-        switch(state)
+        switch(_state)
         {
             case _StateMachine.Idle:
                 Idle();

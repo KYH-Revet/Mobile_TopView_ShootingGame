@@ -66,7 +66,7 @@ public abstract class Character : MonoBehaviour, IObserver<GameManager.GameState
                 break;
             default:
                 // Alive
-                if (state != _StateMachine.Dead)
+                if (_state != _StateMachine.Dead)
                 {
                     // Change hp
                     stat.hp += value;
@@ -162,17 +162,21 @@ public abstract class Character : MonoBehaviour, IObserver<GameManager.GameState
         Dead
     }
     [SerializeField]
-    protected _StateMachine state;
+    protected _StateMachine _state;
+    public _StateMachine state { get { return _state; } }
     /// <summary>StateMachine의 state와 Animator의 state 변수값 변경 함수</summary>
     /// <param name="nextState">변경할 상태</param>
     public void ChangeState(_StateMachine nextState)
     {
-        if (state == nextState && state == _StateMachine.Dead)
+        // Same state or Already dead
+        if (_state == nextState && _state == _StateMachine.Dead)
             return;
-        state = nextState;
+
+        // State Change
+        _state = nextState;
         animator.SetInteger("State", (int)nextState);
 
-        if (state == _StateMachine.Dead)
+        if (_state == _StateMachine.Dead)
             animator.SetTrigger("Dead");
     }
 

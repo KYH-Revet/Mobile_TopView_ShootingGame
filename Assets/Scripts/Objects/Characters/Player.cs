@@ -60,7 +60,7 @@ public class Player : Character, IObserver<GameManager.GameState>, IObservable<P
     // StateMachine
     public override void StateMachine()
     {
-        switch (state)
+        switch (_state)
         {
             case _StateMachine.Idle:
                 if(!WaveManager.WaveEnd())

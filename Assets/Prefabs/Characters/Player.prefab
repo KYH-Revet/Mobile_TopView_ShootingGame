@@ -190,7 +190,7 @@ MonoBehaviour:
     penetrate: 0
     bounceCount: 3
     speed: 1000
-  state: 0
+  _state: 0
   hpBar: {fileID: 920348463209334070}
   targetLayer:
     serializedVersion: 2

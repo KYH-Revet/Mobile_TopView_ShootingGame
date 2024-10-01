@@ -4,10 +4,11 @@ using System;
 
 public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameState>
 {
+    // Player
     Player player;
+
     [Tooltip("조이스틱 구성 이미지")]
     Image[] images;
-
     [SerializeField]
     RectTransform lever;
     RectTransform rectTransform;
@@ -58,20 +59,35 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameState>
         // Do nothing
         if (!isWorking)
             return;
-
+        
         // Joystick
 #if UNITY_IOS || UNITY_ANDROID  // Mobile Touch
-        OnTouch();
-#else                           // Test Mouse
-        OnMouseButton();
+        {
+            if (player.state != Character._StateMachine.Dead)
+            {
+                OnTouch();
+            }
+        }
+#else                           // Desktop Mouse
+        {
+            if (player.state != Character._StateMachine.Dead)
+            {
+                OnMouseButton();
+            }
+        }
 #endif
     }
 
     void FixedUpdate()
     {
         // Do nothing
-        if (!isWorking)
+        if (!isWorking || player.state == Character._StateMachine.Dead)
+        {
+            // Joystick UI Off
+            if (receivingInput)
+                JoyStickOff();
             return;
+        }
 
         // Receive input
         if (receivingInput) // Player is Move
@@ -153,7 +169,14 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameState>
         // Input direction = 0 ~ 1
         inputDirection = inputVector / leverRange;
     }
+    public void JoyStickOff()
+    {
+        // Reset input sign
+        receivingInput = false;
 
+        // UI Off
+        ImageAlpha(0f);
+    }
 
     // UI Function
     void ImageAlpha(float alpha)
@@ -208,10 +231,6 @@ public class VirtualJoystick : MonoBehaviour, IObserver<GameManager.GameState>
                 break;
         }
 
-        // Reset input sign
-        receivingInput = false;
-
-        // UI Off
-        ImageAlpha(0f);
+        JoyStickOff();
     }
 }

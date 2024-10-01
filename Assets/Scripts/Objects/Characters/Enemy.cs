@@ -36,7 +36,7 @@ public abstract class Enemy : Character, IObserver<Player>
     public override void HPControll(float value)
     {
         base.HPControll(value);
-        if (state == _StateMachine.Dead)
+        if (_state == _StateMachine.Dead)
             Dead();
     }
 

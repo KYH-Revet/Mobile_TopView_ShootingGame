@@ -6,7 +6,7 @@ public class Enemy_Normal : Enemy
     public override void StateMachine()
     {
         // StateMachine
-        switch (state)
+        switch (_state)
         {
             case _StateMachine.Idle:
                 // Target(Player)가 사거리를 벗어남. 추격 재개
